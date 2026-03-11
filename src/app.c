@@ -3,6 +3,8 @@
 #include <GL/gl.h>
 #include "../include/app.h"
 #include "../include/render.h"
+#include "../include/texture.h"
+#include "../include/texture.h"
 
 int init_app(App* app)
 {
@@ -11,6 +13,9 @@ int init_app(App* app)
     app->running = 1;
     app->width = 1280;
     app->height = 720;
+    app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
+    app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
+    app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL init failed: %s\n", SDL_GetError());
@@ -51,6 +56,22 @@ int init_app(App* app)
     resize_viewport(app->width, app->height);
     init_game(&app->game);
 
+    app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
+    app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
+    app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
+
+    if (app->floor_texture == 0) {
+        fprintf(stderr, "Warning: floor texture not loaded.\n");
+    }
+
+    if (app->wall_texture == 0) {
+        fprintf(stderr, "Warning: wall texture not loaded.\n");
+    }
+
+    if (app->ceiling_texture == 0) {
+        fprintf(stderr, "Warning: ceiling texture not loaded.\n");
+    }
+
     return 1;
 }
 
@@ -69,16 +90,19 @@ void run_app(App* app)
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 app->running = 0;
-            } else if (event.type == SDL_WINDOWEVENT) {
+            }
+            else if (event.type == SDL_WINDOWEVENT) {
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     app->width = event.window.data1;
                     app->height = event.window.data2;
                     resize_viewport(app->width, app->height);
                 }
-            } else if (event.type == SDL_MOUSEMOTION) {
+            }
+            else if (event.type == SDL_MOUSEMOTION) {
                 mouse_dx += event.motion.xrel;
                 mouse_dy += event.motion.yrel;
-            } else if (event.type == SDL_KEYDOWN) {
+            }
+            else if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_F1) {
                     toggle_help();
                 }
@@ -95,7 +119,8 @@ void run_app(App* app)
 
         key_state = SDL_GetKeyboardState(NULL);
         update_game(&app->game, dt, key_state, mouse_dx, mouse_dy, &app->running);
-        render_scene(app->window, &app->game);
+
+        render_scene(app->window, &app->game, app->floor_texture, app->wall_texture, app->ceiling_texture);
 
         SDL_GL_SwapWindow(app->window);
     }
@@ -103,12 +128,29 @@ void run_app(App* app)
 
 void destroy_app(App* app)
 {
+    if (app->floor_texture) {
+        glDeleteTextures(1, &app->floor_texture);
+        app->floor_texture = 0;
+    }
+
+    if (app->wall_texture) {
+        glDeleteTextures(1, &app->wall_texture);
+        app->wall_texture = 0;
+    }
+
+    if (app->ceiling_texture) {
+        glDeleteTextures(1, &app->ceiling_texture);
+        app->ceiling_texture = 0;
+    }
+
     if (app->gl_context) {
         SDL_GL_DeleteContext(app->gl_context);
+        app->gl_context = NULL;
     }
 
     if (app->window) {
         SDL_DestroyWindow(app->window);
+        app->window = NULL;
     }
 
     SDL_Quit();

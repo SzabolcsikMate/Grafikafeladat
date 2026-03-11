@@ -2,6 +2,7 @@
 #define APP_H
 
 #include <SDL2/SDL.h>
+#include <GL/gl.h>
 #include "game.h"
 
 typedef struct App {
@@ -11,6 +12,10 @@ typedef struct App {
     int running;
     int width;
     int height;
+
+    GLuint floor_texture;
+    GLuint wall_texture;
+    GLuint ceiling_texture;
 } App;
 
 int init_app(App* app);

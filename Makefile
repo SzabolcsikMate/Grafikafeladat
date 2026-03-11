@@ -1,7 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -Iinclude
-SRC = main.c src/app.c src/game.c src/render.c src/collision.c src/math3d.c
-OBJ = $(SRC:.c=.o)
+SRC = main.c src/app.c src/game.c src/render.c src/collision.c src/math3d.c src/texture.cOBJ = $(SRC:.c=.o)
 TARGET = dark_museum.exe
 LIBS = -lSDL2 -lopengl32
 
@@ -27,6 +26,9 @@ src/collision.o: src/collision.c
 
 src/math3d.o: src/math3d.c
 	$(CC) $(CFLAGS) -c src/math3d.c -o src/math3d.o
+
+src/texture.o: src/texture.c
+	$(CC) $(CFLAGS) -c src/texture.c -o src/texture.o
 
 clean:
 	del /Q *.o src\*.o $(TARGET) 2>nul

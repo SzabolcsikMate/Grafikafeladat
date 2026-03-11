@@ -1,5 +1,4 @@
 #include <math.h>
-#include <stdio.h>
 #include <SDL2/SDL.h>
 #include "../include/game.h"
 
@@ -13,18 +12,16 @@ static void add_collider(GameState* game, Vec3 min, Vec3 max)
 
     game->colliders[game->collider_count].min = min;
     game->colliders[game->collider_count].max = max;
-    game->colliders[game->collider_count].max.y = max.y;
-    game->colliders[game->collider_count].min.y = min.y;
-    game->colliders[game->collider_count].max.x = max.x;
-    game->colliders[game->collider_count].min.x = min.x;
-    game->colliders[game->collider_count].max.z = max.z;
-    game->colliders[game->collider_count].min.z = min.z;
     game->collider_count++;
 }
 
 static void set_active_light(GameState* game, int index)
 {
     int i;
+
+    if (game->light_point_count <= 0) {
+        return;
+    }
 
     for (i = 0; i < game->light_point_count; i++) {
         game->light_points[i].active = 0;
@@ -73,7 +70,7 @@ void init_game(GameState* game)
 void reset_game(GameState* game)
 {
     game->player.position = vec3(0.0f, 1.0f, 8.0f);
-    game->player.yaw = -90.0f;
+    game->player.yaw = 0.0f;
     game->player.pitch = 0.0f;
     game->player.radius = 0.35f;
     game->player.move_speed = 3.5f;
@@ -83,7 +80,7 @@ void reset_game(GameState* game)
     game->current_target = 0;
     game->darkness_limit = 12.0f;
     game->darkness_timer = game->darkness_limit;
-    game->active_light_strength = 1.6f;
+    game->active_light_strength = 1.8f;
     game->game_over = 0;
     game->win_counter = 0;
 
@@ -94,33 +91,43 @@ void reset_game(GameState* game)
 
     add_collider(game, vec3(-2.0f, 0.0f, -10.0f), vec3(-1.4f, 3.0f, -1.5f));
     add_collider(game, vec3(1.4f, 0.0f, 1.5f), vec3(2.0f, 3.0f, 10.0f));
+
     add_collider(game, vec3(-6.0f, 0.0f, -2.0f), vec3(-2.5f, 2.0f, -1.0f));
     add_collider(game, vec3(2.5f, 0.0f, 1.0f), vec3(6.0f, 2.0f, 2.0f));
+
     add_collider(game, vec3(-4.5f, 0.0f, 4.0f), vec3(-3.0f, 1.6f, 5.5f));
     add_collider(game, vec3(3.0f, 0.0f, -5.5f), vec3(4.5f, 1.6f, -4.0f));
 
-    game->light_points[0].position = vec3(-7.0f, 1.2f, -7.0f);
-    game->light_points[0].base_intensity = 1.3f;
+    add_collider(game, vec3(-7.8f, 0.0f, 2.8f), vec3(-6.6f, 2.0f, 4.0f));
+    add_collider(game, vec3(6.6f, 0.0f, -4.0f), vec3(7.8f, 2.0f, -2.8f));
 
-    game->light_points[1].position = vec3(7.0f, 1.2f, -7.0f);
+    add_collider(game, vec3(-1.0f, 0.0f, -0.6f), vec3(1.0f, 1.5f, 0.6f));
+
+    game->light_points[0].position = vec3(-7.2f, 1.4f, -7.2f);
+    game->light_points[0].base_intensity = 1.4f;
+
+    game->light_points[1].position = vec3(7.2f, 1.4f, -7.2f);
     game->light_points[1].base_intensity = 1.5f;
 
-    game->light_points[2].position = vec3(7.0f, 1.2f, 7.0f);
-    game->light_points[2].base_intensity = 1.4f;
+    game->light_points[2].position = vec3(7.2f, 1.4f, 7.2f);
+    game->light_points[2].base_intensity = 1.45f;
 
-    game->light_points[3].position = vec3(-7.0f, 1.2f, 7.0f);
-    game->light_points[3].base_intensity = 1.6f;
+    game->light_points[3].position = vec3(-7.2f, 1.4f, 7.2f);
+    game->light_points[3].base_intensity = 1.55f;
 
-    game->light_points[4].position = vec3(0.0f, 1.2f, 0.0f);
-    game->light_points[4].base_intensity = 1.8f;
+    game->light_points[4].position = vec3(0.0f, 1.4f, -6.0f);
+    game->light_points[4].base_intensity = 1.7f;
 
-    game->light_point_count = 5;
+    game->light_points[5].position = vec3(0.0f, 1.4f, 6.0f);
+    game->light_points[5].base_intensity = 1.7f;
+
+    game->light_point_count = 6;
     set_active_light(game, 0);
 }
 
 static void handle_mouse_look(GameState* game, int mouse_dx, int mouse_dy)
 {
-    game->player.yaw += mouse_dx * MOUSE_SENSITIVITY;
+    game->player.yaw -= mouse_dx * MOUSE_SENSITIVITY;
     game->player.pitch -= mouse_dy * MOUSE_SENSITIVITY;
 
     if (game->player.pitch > 89.0f) {
@@ -135,13 +142,13 @@ static void handle_mouse_look(GameState* game, int mouse_dx, int mouse_dy)
 static Vec3 get_forward(const GameState* game)
 {
     float yaw_rad = game->player.yaw * (float)M_PI / 180.0f;
-    return vec3(cosf(yaw_rad), 0.0f, sinf(yaw_rad));
+    return vec3(-sinf(yaw_rad), 0.0f, -cosf(yaw_rad));
 }
 
 static Vec3 get_right(const GameState* game)
 {
-    Vec3 forward = get_forward(game);
-    return vec3(-forward.z, 0.0f, forward.x);
+    float yaw_rad = game->player.yaw * (float)M_PI / 180.0f;
+    return vec3(cosf(yaw_rad), 0.0f, -sinf(yaw_rad));
 }
 
 static void handle_movement(GameState* game, float dt, const unsigned char* key_state)
@@ -194,7 +201,7 @@ static void update_darkness(GameState* game, float dt)
     Vec3 to_target = vec3_sub(target->position, game->player.position);
     float dist = vec3_length(to_target);
 
-    if (dist < 1.3f) {
+    if (dist < 1.35f) {
         game->darkness_timer = game->darkness_limit;
         game->win_counter++;
         set_active_light(game, (game->current_target + 1) % game->light_point_count);
@@ -207,7 +214,7 @@ static void update_darkness(GameState* game, float dt)
             SDL_ShowSimpleMessageBox(
                 SDL_MESSAGEBOX_WARNING,
                 "Game Over",
-                "The creature caught you in the dark.\n\nPress R or Enter to restart the game.",
+                "The darkness caught you.\n\nPress R or Enter to restart.",
                 NULL
             );
         }
@@ -240,11 +247,11 @@ void update_game(GameState* game, float dt, const unsigned char* key_state, int 
         game->active_light_strength -= 0.8f * dt;
     }
 
-    if (game->active_light_strength < 0.4f) {
-        game->active_light_strength = 0.4f;
+    if (game->active_light_strength < 0.6f) {
+        game->active_light_strength = 0.6f;
     }
 
-    if (game->active_light_strength > 3.0f) {
-        game->active_light_strength = 3.0f;
+    if (game->active_light_strength > 3.2f) {
+        game->active_light_strength = 3.2f;
     }
 }
