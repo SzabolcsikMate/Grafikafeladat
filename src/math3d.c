@@ -1,5 +1,5 @@
 #include <math.h>
-#include "../include/math3d.h"
+#include "math3d.h"
 
 Vec3 vec3(float x, float y, float z)
 {

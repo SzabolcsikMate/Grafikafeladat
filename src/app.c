@@ -1,21 +1,16 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
-#include "../include/app.h"
-#include "../include/render.h"
-#include "../include/texture.h"
-#include "../include/texture.h"
+#include "app.h"
+#include "render.h"
+#include "texture.h"
 
-int init_app(App* app)
-{
+int init_app(App *app) {
     app->window = NULL;
     app->gl_context = NULL;
     app->running = 1;
     app->width = 1280;
     app->height = 720;
-    app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
-    app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
-    app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL init failed: %s\n", SDL_GetError());
@@ -56,9 +51,12 @@ int init_app(App* app)
     resize_viewport(app->width, app->height);
     init_game(&app->game);
 
-    app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
-    app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
-    app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
+    // Try loading with different relative paths to be safe
+    app->floor_texture = load_texture_bmp("../assets/textures/floor.bmp");
+
+    app->wall_texture = load_texture_bmp("../assets/textures/wall.bmp");
+
+    app->ceiling_texture = load_texture_bmp("../assets/textures/ceiling.bmp");
 
     if (app->floor_texture == 0) {
         fprintf(stderr, "Warning: floor texture not loaded.\n");
@@ -75,42 +73,42 @@ int init_app(App* app)
     return 1;
 }
 
-void run_app(App* app)
-{
+void run_app(App *app) {
     Uint32 last_ticks = SDL_GetTicks();
+    const unsigned char *key_state;
+    Uint32 current_ticks;
+    float dt;
+    int mouse_dx;
+    int mouse_dy;
+    SDL_Event event;
 
     while (app->running) {
-        SDL_Event event;
-        Uint32 current_ticks;
-        float dt;
-        int mouse_dx = 0;
-        int mouse_dy = 0;
-        const unsigned char* key_state;
+        mouse_dx = 0;
+        mouse_dy = 0;
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 app->running = 0;
-            }
-            else if (event.type == SDL_WINDOWEVENT) {
+            } else if (event.type == SDL_WINDOWEVENT) {
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     app->width = event.window.data1;
                     app->height = event.window.data2;
                     resize_viewport(app->width, app->height);
                 }
-            }
-            else if (event.type == SDL_MOUSEMOTION) {
+            } else if (event.type == SDL_MOUSEMOTION) {
                 mouse_dx += event.motion.xrel;
                 mouse_dy += event.motion.yrel;
-            }
-            else if (event.type == SDL_KEYDOWN) {
+            } else if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_F1) {
                     toggle_help();
+                } else if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    app->running = 0;
                 }
             }
         }
 
         current_ticks = SDL_GetTicks();
-        dt = (float)(current_ticks - last_ticks) / 1000.0f;
+        dt = (float) (current_ticks - last_ticks) / 1000.0f;
         last_ticks = current_ticks;
 
         if (dt > 0.05f) {
@@ -126,8 +124,7 @@ void run_app(App* app)
     }
 }
 
-void destroy_app(App* app)
-{
+void destroy_app(App *app) {
     if (app->floor_texture) {
         glDeleteTextures(1, &app->floor_texture);
         app->floor_texture = 0;

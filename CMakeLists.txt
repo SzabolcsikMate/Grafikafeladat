@@ -3,7 +3,7 @@ project(Dark_Museum C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SDK_ROOT "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203")
+set(SDK_ROOT "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203")
 set(MINGW_ROOT "${SDK_ROOT}/MinGW")
 
 include_directories(
@@ -23,6 +23,7 @@ add_executable(Dark_Museum
         src/render.c
         src/collision.c
         src/math3d.c
+        src/texture.c
 )
 
 target_link_libraries(Dark_Museum

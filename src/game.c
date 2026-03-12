@@ -1,6 +1,6 @@
 #include <math.h>
 #include <SDL2/SDL.h>
-#include "../include/game.h"
+#include "game.h"
 
 static const float MOUSE_SENSITIVITY = 0.08f;
 

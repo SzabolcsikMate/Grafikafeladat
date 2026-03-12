@@ -1,7 +1,16 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
-#include "../include/texture.h"
+#include "texture.h"
+#include <SDL_opengl.h>
+
+#ifndef GL_BGR
+#define GL_BGR 0x80E0
+#endif
+
+#ifndef GL_BGRA
+#define GL_BGRA 0x80E1
+#endif
 
 GLuint load_texture_bmp(const char* filename)
 {
@@ -33,10 +42,13 @@ GLuint load_texture_bmp(const char* filename)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+    // Some systems prefer GL_RGBA or GL_RGB as internal format
+    GLint internalFormat = (surface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
+
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
-        GL_RGBA,
+        internalFormat,
         surface->w,
         surface->h,
         0,

@@ -2,7 +2,7 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
-#include "../include/render.h"
+#include "render.h"
 
 static void set_perspective(float fov_deg, float aspect, float near_plane, float far_plane)
 {
@@ -282,11 +282,13 @@ static void draw_light_marker(const LightPoint* light, float pulse)
         glColor3f(1.0f, 0.95f, 0.25f);
 
         glBegin(GL_QUADS);
+        glNormal3f(0.0f, 0.0f, 1.0f);
         glVertex3f(-sx, sy, 0.0f);
         glVertex3f(sx, sy, 0.0f);
         glVertex3f(sx, -sy, 0.0f);
         glVertex3f(-sx, -sy, 0.0f);
 
+        glNormal3f(1.0f, 0.0f, 0.0f);
         glVertex3f(0.0f, sy, -sx);
         glVertex3f(0.0f, sy, sx);
         glVertex3f(0.0f, -sy, sx);
@@ -298,11 +300,13 @@ static void draw_light_marker(const LightPoint* light, float pulse)
         glColor3f(0.35f, 0.35f, 0.20f);
 
         glBegin(GL_QUADS);
+        glNormal3f(0.0f, 0.0f, 1.0f);
         glVertex3f(-sx, sy, 0.0f);
         glVertex3f(sx, sy, 0.0f);
         glVertex3f(sx, -sy, 0.0f);
         glVertex3f(-sx, -sy, 0.0f);
 
+        glNormal3f(1.0f, 0.0f, 0.0f);
         glVertex3f(0.0f, sy, -sx);
         glVertex3f(0.0f, sy, sx);
         glVertex3f(0.0f, -sy, sx);
@@ -414,6 +418,7 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
     draw_wall_panels();
 
     for (i = 0; i < game->collider_count; i++) {
+        // draw walls
         if (wall_texture != 0) {
             draw_textured_box(game->colliders[i].min, game->colliders[i].max, wall_texture, 2.0f);
         } else {

@@ -1,4 +1,4 @@
-#include "../include/collision.h"
+#include "collision.h"
 
 static float clampf(float v, float min_value, float max_value)
 {
