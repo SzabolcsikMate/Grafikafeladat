@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include "texture.h"
-#include <SDL_opengl.h>
+#include <SDL2/SDL_opengl.h>
 
 #ifndef GL_BGR
 #define GL_BGR 0x80E0

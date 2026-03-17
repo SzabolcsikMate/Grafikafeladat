@@ -4,7 +4,7 @@
 #include "math3d.h"
 #include "collision.h"
 
-#define MAX_COLLIDERS 64
+#define MAX_COLLIDERS 256
 #define MAX_LIGHT_POINTS 8
 
 typedef struct Player {

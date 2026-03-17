@@ -3,17 +3,15 @@ project(Dark_Museum C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SDK_ROOT "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203")
-set(MINGW_ROOT "${SDK_ROOT}/MinGW")
+set(SDL2_ROOT "C:/SDL2/SDL2-devel-2.32.10-mingw/SDL2-2.32.10/x86_64-w64-mingw32")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/include
-        ${MINGW_ROOT}/include
-        ${MINGW_ROOT}/include/SDL2
+        ${SDL2_ROOT}/include
 )
 
 link_directories(
-        ${MINGW_ROOT}/lib
+        ${SDL2_ROOT}/lib
 )
 
 add_executable(Dark_Museum
@@ -31,4 +29,5 @@ target_link_libraries(Dark_Museum
         SDL2main
         SDL2
         opengl32
+        m
 )

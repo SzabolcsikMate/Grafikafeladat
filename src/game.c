@@ -69,7 +69,7 @@ void init_game(GameState* game)
 
 void reset_game(GameState* game)
 {
-    game->player.position = vec3(0.0f, 1.0f, 8.0f);
+    game->player.position = vec3(0.0f, 1.0f, 0.0f);
     game->player.yaw = 0.0f;
     game->player.pitch = 0.0f;
     game->player.radius = 0.35f;
@@ -84,44 +84,47 @@ void reset_game(GameState* game)
     game->game_over = 0;
     game->win_counter = 0;
 
-    add_collider(game, vec3(-10.0f, 0.0f, -10.0f), vec3(10.0f, 3.0f, -9.5f));
-    add_collider(game, vec3(-10.0f, 0.0f, 9.5f), vec3(10.0f, 3.0f, 10.0f));
-    add_collider(game, vec3(-10.0f, 0.0f, -10.0f), vec3(-9.5f, 3.0f, 10.0f));
-    add_collider(game, vec3(9.5f, 0.0f, -10.0f), vec3(10.0f, 3.0f, 10.0f));
+    // New museum layout
+    float size = 15.0f;
+    float wall_thickness = 0.5f;
+    float wall_height = 3.0f;
 
-    add_collider(game, vec3(-2.0f, 0.0f, -10.0f), vec3(-1.4f, 3.0f, -1.5f));
-    add_collider(game, vec3(1.4f, 0.0f, 1.5f), vec3(2.0f, 3.0f, 10.0f));
+    // Outer walls
+    add_collider(game, vec3(-size, 0.0f, -size), vec3(size, wall_height, -size + wall_thickness));
+    add_collider(game, vec3(-size, 0.0f, size - wall_thickness), vec3(size, wall_height, size));
+    add_collider(game, vec3(-size, 0.0f, -size), vec3(-size + wall_thickness, wall_height, size));
+    add_collider(game, vec3(size - wall_thickness, 0.0f, -size), vec3(size, wall_height, size));
 
-    add_collider(game, vec3(-6.0f, 0.0f, -2.0f), vec3(-2.5f, 2.0f, -1.0f));
-    add_collider(game, vec3(2.5f, 0.0f, 1.0f), vec3(6.0f, 2.0f, 2.0f));
+    // Internal walls forming a cross shape, creating 4 galleries
+    // Vertical walls
+    add_collider(game, vec3(-2.0f, 0.0f, -size + wall_thickness), vec3(-1.5f, wall_height, -4.0f));
+    add_collider(game, vec3(1.5f, 0.0f, -size + wall_thickness), vec3(2.0f, wall_height, -4.0f));
+    add_collider(game, vec3(-2.0f, 0.0f, 4.0f), vec3(-1.5f, wall_height, size - wall_thickness));
+    add_collider(game, vec3(1.5f, 0.0f, 4.0f), vec3(2.0f, wall_height, size - wall_thickness));
 
-    add_collider(game, vec3(-4.5f, 0.0f, 4.0f), vec3(-3.0f, 1.6f, 5.5f));
-    add_collider(game, vec3(3.0f, 0.0f, -5.5f), vec3(4.5f, 1.6f, -4.0f));
+    // Horizontal walls
+    add_collider(game, vec3(-size + wall_thickness, 0.0f, -2.0f), vec3(-4.0f, wall_height, -1.5f));
+    add_collider(game, vec3(4.0f, 0.0f, -2.0f), vec3(size - wall_thickness, wall_height, -1.5f));
+    add_collider(game, vec3(-size + wall_thickness, 0.0f, 1.5f), vec3(-4.0f, wall_height, 2.0f));
+    add_collider(game, vec3(4.0f, 0.0f, 1.5f), vec3(size - wall_thickness, wall_height, 2.0f));
 
-    add_collider(game, vec3(-7.8f, 0.0f, 2.8f), vec3(-6.6f, 2.0f, 4.0f));
-    add_collider(game, vec3(6.6f, 0.0f, -4.0f), vec3(7.8f, 2.0f, -2.8f));
+    // Lights
+    game->light_points[0].position = vec3(0.0f, 1.4f, 0.0f); // Central hall
+    game->light_points[0].base_intensity = 1.5f;
 
-    add_collider(game, vec3(-1.0f, 0.0f, -0.6f), vec3(1.0f, 1.5f, 0.6f));
-
-    game->light_points[0].position = vec3(-7.2f, 1.4f, -7.2f);
-    game->light_points[0].base_intensity = 1.4f;
-
-    game->light_points[1].position = vec3(7.2f, 1.4f, -7.2f);
+    game->light_points[1].position = vec3(-10.0f, 1.4f, -10.0f); // Top-left gallery
     game->light_points[1].base_intensity = 1.5f;
 
-    game->light_points[2].position = vec3(7.2f, 1.4f, 7.2f);
-    game->light_points[2].base_intensity = 1.45f;
+    game->light_points[2].position = vec3(10.0f, 1.4f, -10.0f); // Top-right gallery
+    game->light_points[2].base_intensity = 1.5f;
 
-    game->light_points[3].position = vec3(-7.2f, 1.4f, 7.2f);
-    game->light_points[3].base_intensity = 1.55f;
+    game->light_points[3].position = vec3(-10.0f, 1.4f, 10.0f); // Bottom-left gallery
+    game->light_points[3].base_intensity = 1.5f;
 
-    game->light_points[4].position = vec3(0.0f, 1.4f, -6.0f);
-    game->light_points[4].base_intensity = 1.7f;
+    game->light_points[4].position = vec3(10.0f, 1.4f, 10.0f); // Bottom-right gallery
+    game->light_points[4].base_intensity = 1.5f;
 
-    game->light_points[5].position = vec3(0.0f, 1.4f, 6.0f);
-    game->light_points[5].base_intensity = 1.7f;
-
-    game->light_point_count = 6;
+    game->light_point_count = 5;
     set_active_light(game, 0);
 }
 
@@ -197,6 +200,7 @@ static void handle_movement(GameState* game, float dt, const unsigned char* key_
 
 static void update_darkness(GameState* game, float dt)
 {
+    if (game->light_point_count == 0) return;
     LightPoint* target = &game->light_points[game->current_target];
     Vec3 to_target = vec3_sub(target->position, game->player.position);
     float dist = vec3_length(to_target);

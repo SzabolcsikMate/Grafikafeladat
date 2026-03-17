@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include "render.h"
+#include "game.h"
 
 static void set_perspective(float fov_deg, float aspect, float near_plane, float far_plane)
 {
@@ -127,10 +128,10 @@ static void draw_textured_floor(GLuint texture_id)
     glBegin(GL_QUADS);
     glNormal3f(0.0f, 1.0f, 0.0f);
 
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 0.0f, -10.0f);
-    glTexCoord2f(8.0f, 0.0f); glVertex3f(10.0f, 0.0f, -10.0f);
-    glTexCoord2f(8.0f, 8.0f); glVertex3f(10.0f, 0.0f, 10.0f);
-    glTexCoord2f(0.0f, 8.0f); glVertex3f(-10.0f, 0.0f, 10.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-15.0f, 0.0f, -15.0f);
+    glTexCoord2f(15.0f, 0.0f); glVertex3f(15.0f, 0.0f, -15.0f);
+    glTexCoord2f(15.0f, 15.0f); glVertex3f(15.0f, 0.0f, 15.0f);
+    glTexCoord2f(0.0f, 15.0f); glVertex3f(-15.0f, 0.0f, 15.0f);
 
     glEnd();
 
@@ -146,10 +147,10 @@ static void draw_textured_ceiling(GLuint texture_id)
     glBegin(GL_QUADS);
     glNormal3f(0.0f, -1.0f, 0.0f);
 
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 3.0f, 10.0f);
-    glTexCoord2f(8.0f, 0.0f); glVertex3f(10.0f, 3.0f, 10.0f);
-    glTexCoord2f(8.0f, 8.0f); glVertex3f(10.0f, 3.0f, -10.0f);
-    glTexCoord2f(0.0f, 8.0f); glVertex3f(-10.0f, 3.0f, -10.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-15.0f, 3.0f, 15.0f);
+    glTexCoord2f(15.0f, 0.0f); glVertex3f(15.0f, 3.0f, 15.0f);
+    glTexCoord2f(15.0f, 15.0f); glVertex3f(15.0f, 3.0f, -15.0f);
+    glTexCoord2f(0.0f, 15.0f); glVertex3f(-15.0f, 3.0f, -15.0f);
 
     glEnd();
 
@@ -165,108 +166,17 @@ static void draw_floor_grid(void)
 
     glBegin(GL_LINES);
 
-    for (i = -10; i <= 10; i++) {
-        glVertex3f((float)i, 0.01f, -10.0f);
-        glVertex3f((float)i, 0.01f, 10.0f);
+    for (i = -15; i <= 15; i++) {
+        glVertex3f((float)i, 0.01f, -15.0f);
+        glVertex3f((float)i, 0.01f, 15.0f);
 
-        glVertex3f(-10.0f, 0.01f, (float)i);
-        glVertex3f(10.0f, 0.01f, (float)i);
+        glVertex3f(-15.0f, 0.01f, (float)i);
+        glVertex3f(15.0f, 0.01f, (float)i);
     }
 
     glEnd();
 
     glEnable(GL_LIGHTING);
-}
-
-static void draw_wall_panels(void)
-{
-    int i;
-
-    for (i = -8; i <= 8; i += 4) {
-        draw_box((Vec3){-9.45f, 0.8f, (float)i - 1.1f}, (Vec3){-9.35f, 2.1f, (float)i + 1.1f}, 0.45f, 0.43f, 0.38f);
-        draw_box((Vec3){9.35f, 0.8f, (float)i - 1.1f}, (Vec3){9.45f, 2.1f, (float)i + 1.1f}, 0.45f, 0.43f, 0.38f);
-    }
-}
-
-static void draw_pedestal(Vec3 center)
-{
-    Vec3 min = {center.x - 0.5f, 0.0f, center.z - 0.5f};
-    Vec3 max = {center.x + 0.5f, 1.2f, center.z + 0.5f};
-
-    draw_box(min, max, 0.58f, 0.58f, 0.62f);
-
-    glPushMatrix();
-    glTranslatef(center.x, 1.55f, center.z);
-    glColor3f(0.82f, 0.82f, 0.85f);
-
-    glBegin(GL_QUADS);
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(-0.22f, 0.0f, -0.22f);
-    glVertex3f(0.22f, 0.0f, -0.22f);
-    glVertex3f(0.22f, 0.0f, 0.22f);
-    glVertex3f(-0.22f, 0.0f, 0.22f);
-    glEnd();
-
-    glPopMatrix();
-}
-
-static void draw_column(Vec3 center)
-{
-    draw_box(
-        (Vec3){center.x - 0.35f, 0.0f, center.z - 0.35f},
-        (Vec3){center.x + 0.35f, 2.8f, center.z + 0.35f},
-        0.50f, 0.50f, 0.54f
-    );
-}
-
-static void draw_vitrine(Vec3 center)
-{
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glColor4f(0.55f, 0.65f, 0.75f, 0.30f);
-
-    glBegin(GL_QUADS);
-
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(center.x - 0.6f, 0.2f, center.z + 0.6f);
-    glVertex3f(center.x - 0.6f, 1.6f, center.z + 0.6f);
-    glVertex3f(center.x + 0.6f, 1.6f, center.z + 0.6f);
-    glVertex3f(center.x + 0.6f, 0.2f, center.z + 0.6f);
-
-    glNormal3f(0.0f, 0.0f, -1.0f);
-    glVertex3f(center.x + 0.6f, 0.2f, center.z - 0.6f);
-    glVertex3f(center.x + 0.6f, 1.6f, center.z - 0.6f);
-    glVertex3f(center.x - 0.6f, 1.6f, center.z - 0.6f);
-    glVertex3f(center.x - 0.6f, 0.2f, center.z - 0.6f);
-
-    glNormal3f(-1.0f, 0.0f, 0.0f);
-    glVertex3f(center.x - 0.6f, 0.2f, center.z - 0.6f);
-    glVertex3f(center.x - 0.6f, 1.6f, center.z - 0.6f);
-    glVertex3f(center.x - 0.6f, 1.6f, center.z + 0.6f);
-    glVertex3f(center.x - 0.6f, 0.2f, center.z + 0.6f);
-
-    glNormal3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(center.x + 0.6f, 0.2f, center.z + 0.6f);
-    glVertex3f(center.x + 0.6f, 1.6f, center.z + 0.6f);
-    glVertex3f(center.x + 0.6f, 1.6f, center.z - 0.6f);
-    glVertex3f(center.x + 0.6f, 0.2f, center.z - 0.6f);
-
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(center.x - 0.6f, 1.6f, center.z - 0.6f);
-    glVertex3f(center.x + 0.6f, 1.6f, center.z - 0.6f);
-    glVertex3f(center.x + 0.6f, 1.6f, center.z + 0.6f);
-    glVertex3f(center.x - 0.6f, 1.6f, center.z + 0.6f);
-
-    glEnd();
-
-    glDisable(GL_BLEND);
-
-    draw_box(
-        (Vec3){center.x - 0.62f, 0.0f, center.z - 0.62f},
-        (Vec3){center.x + 0.62f, 0.2f, center.z + 0.62f},
-        0.30f, 0.30f, 0.33f
-    );
 }
 
 static void draw_light_marker(const LightPoint* light, float pulse)
@@ -320,14 +230,12 @@ static void draw_light_marker(const LightPoint* light, float pulse)
 void init_render_state(void)
 {
     GLfloat ambient[] = {0.16f, 0.16f, 0.18f, 1.0f};
-    GLfloat diffuse[] = {0.95f, 0.92f, 0.75f, 1.0f};
     GLfloat specular[] = {0.35f, 0.35f, 0.30f, 1.0f};
     GLfloat fog_color[] = {0.03f, 0.03f, 0.04f, 1.0f};
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_FOG);
     glEnable(GL_BLEND);
@@ -340,8 +248,11 @@ void init_render_state(void)
     glFogfv(GL_FOG_COLOR, fog_color);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+
+    for (int i = 0; i < MAX_LIGHT_POINTS; ++i) {
+        glEnable(GL_LIGHT0 + i);
+        glLightfv(GL_LIGHT0 + i, GL_SPECULAR, specular);
+    }
 }
 
 void resize_viewport(int width, int height)
@@ -363,20 +274,6 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
     float pulse;
     char title[256];
 
-    GLfloat light_pos[] = {
-        game->light_points[game->current_target].position.x,
-        game->light_points[game->current_target].position.y,
-        game->light_points[game->current_target].position.z,
-        1.0f
-    };
-
-    GLfloat light_diffuse[] = {
-        game->active_light_strength,
-        game->active_light_strength * 0.95f,
-        game->active_light_strength * 0.70f,
-        1.0f
-    };
-
     SDL_GetWindowSize(window, &w, &h);
     ticks = SDL_GetTicks();
     pulse = 0.5f + 0.5f * sinf((float)ticks * 0.006f);
@@ -397,14 +294,34 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
 
     apply_camera(game);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse);
+    for (i = 0; i < game->light_point_count; ++i) {
+        GLfloat light_pos[] = {
+            game->light_points[i].position.x,
+            game->light_points[i].position.y,
+            game->light_points[i].position.z,
+            1.0f
+        };
+
+        float intensity = game->light_points[i].base_intensity;
+        if (i == game->current_target) {
+            intensity += game->active_light_strength;
+        }
+
+        GLfloat light_diffuse[] = {
+            intensity,
+            intensity * 0.95f,
+            intensity * 0.70f,
+            1.0f
+        };
+
+        glLightfv(GL_LIGHT0 + i, GL_POSITION, light_pos);
+        glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, light_diffuse);
+    }
 
     if (floor_texture != 0) {
         draw_textured_floor(floor_texture);
     } else {
-        draw_box((Vec3){-10.0f, -0.01f, -10.0f}, (Vec3){10.0f, 0.0f, 10.0f}, 0.22f, 0.22f, 0.24f);
+        draw_box((Vec3){-15.0f, -0.01f, -15.0f}, (Vec3){15.0f, 0.0f, 15.0f}, 0.22f, 0.22f, 0.24f);
     }
 
     draw_floor_grid();
@@ -412,32 +329,16 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
     if (ceiling_texture != 0) {
         draw_textured_ceiling(ceiling_texture);
     } else {
-        draw_box((Vec3){-10.0f, 3.0f, -10.0f}, (Vec3){10.0f, 3.01f, 10.0f}, 0.10f, 0.10f, 0.12f);
+        draw_box((Vec3){-15.0f, 3.0f, -15.0f}, (Vec3){15.0f, 3.01f, 15.0f}, 0.10f, 0.10f, 0.12f);
     }
 
-    draw_wall_panels();
-
     for (i = 0; i < game->collider_count; i++) {
-        // draw walls
         if (wall_texture != 0) {
             draw_textured_box(game->colliders[i].min, game->colliders[i].max, wall_texture, 2.0f);
         } else {
             draw_box(game->colliders[i].min, game->colliders[i].max, 0.42f, 0.42f, 0.46f);
         }
     }
-
-    draw_column((Vec3){-7.0f, 0.0f, -1.5f});
-    draw_column((Vec3){7.0f, 0.0f, 1.5f});
-    draw_column((Vec3){-7.0f, 0.0f, 6.0f});
-    draw_column((Vec3){7.0f, 0.0f, -6.0f});
-
-    draw_pedestal((Vec3){-4.0f, 0.0f, 4.8f});
-    draw_pedestal((Vec3){4.0f, 0.0f, -4.8f});
-    draw_pedestal((Vec3){0.0f, 0.0f, -6.0f});
-    draw_pedestal((Vec3){0.0f, 0.0f, 6.0f});
-
-    draw_vitrine((Vec3){-7.2f, 0.0f, 3.4f});
-    draw_vitrine((Vec3){7.2f, 0.0f, -3.4f});
 
     for (i = 0; i < game->light_point_count; i++) {
         draw_light_marker(&game->light_points[i], pulse);
