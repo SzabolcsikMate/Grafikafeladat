@@ -51,12 +51,22 @@ int init_app(App *app) {
     resize_viewport(app->width, app->height);
     init_game(&app->game);
 
-    // Try loading with different relative paths to be safe
+    // Kérésnek megfelelően visszaállítva a régi biztonságos betöltési mód a ../ részekkel,
+    // hogy a CLion futtatási környezetből (cmake-build-debug mappából) is biztosan menjen
     app->floor_texture = load_texture_bmp("../assets/textures/floor.bmp");
+    if (!app->floor_texture) {
+         app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
+    }
 
     app->wall_texture = load_texture_bmp("../assets/textures/wall.bmp");
+    if (!app->wall_texture) {
+         app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
+    }
 
     app->ceiling_texture = load_texture_bmp("../assets/textures/ceiling.bmp");
+    if (!app->ceiling_texture) {
+        app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
+    }
 
     if (app->floor_texture == 0) {
         fprintf(stderr, "Warning: floor texture not loaded.\n");

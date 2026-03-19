@@ -1,5 +1,5 @@
-ToolSet: 11.0 w64 (local)@C:\Program Files\JetBrains\CLion 2025.3.3\bin\mingw
-Ninja: 1.12.1@C:\Program Files\JetBrains\CLion 2025.3.3\bin\ninja\win\x64\ninja.exe
+ToolSet: 5.0 (local)@C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW
+Ninja: 1.12.1@C:\Users\au095374\AppData\Local\Programs\CLion 2025.3.2\bin\ninja\win\x64\ninja.exe
 Options: 
 
 Options:

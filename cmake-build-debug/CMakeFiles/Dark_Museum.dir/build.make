@@ -43,19 +43,19 @@ cmake_force:
 SHELL = cmd.exe
 
 # The CMake executable.
-CMAKE_COMMAND = "C:\Program Files\JetBrains\CLion 2025.3.3\bin\cmake\win\x64\bin\cmake.exe"
+CMAKE_COMMAND = "C:\Users\au095374\AppData\Local\Programs\CLion 2025.3.2\bin\cmake\win\x64\bin\cmake.exe"
 
 # The command to remove a file.
-RM = "C:\Program Files\JetBrains\CLion 2025.3.3\bin\cmake\win\x64\bin\cmake.exe" -E rm -f
+RM = "C:\Users\au095374\AppData\Local\Programs\CLion 2025.3.2\bin\cmake\win\x64\bin\cmake.exe" -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum
+CMAKE_SOURCE_DIR = C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Dark_Museum.dir/depend.make
@@ -73,108 +73,108 @@ CMakeFiles/Dark_Museum.dir/codegen:
 
 CMakeFiles/Dark_Museum.dir/main.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/main.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/main.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/main.c
+CMakeFiles/Dark_Museum.dir/main.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/main.c
 CMakeFiles/Dark_Museum.dir/main.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Dark_Museum.dir/main.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/main.c.obj -MF CMakeFiles\Dark_Museum.dir\main.c.obj.d -o CMakeFiles\Dark_Museum.dir\main.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Dark_Museum.dir/main.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/main.c.obj -MF CMakeFiles\Dark_Museum.dir\main.c.obj.d -o CMakeFiles\Dark_Museum.dir\main.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\main.c
 
 CMakeFiles/Dark_Museum.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/main.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\main.c > CMakeFiles\Dark_Museum.dir\main.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\main.c > CMakeFiles\Dark_Museum.dir\main.c.i
 
 CMakeFiles/Dark_Museum.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/main.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\main.c -o CMakeFiles\Dark_Museum.dir\main.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\main.c -o CMakeFiles\Dark_Museum.dir\main.c.s
 
 CMakeFiles/Dark_Museum.dir/src/app.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/src/app.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/src/app.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/src/app.c
+CMakeFiles/Dark_Museum.dir/src/app.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/app.c
 CMakeFiles/Dark_Museum.dir/src/app.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/Dark_Museum.dir/src/app.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/app.c.obj -MF CMakeFiles\Dark_Museum.dir\src\app.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\app.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\app.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/Dark_Museum.dir/src/app.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/app.c.obj -MF CMakeFiles\Dark_Museum.dir\src\app.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\app.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\app.c
 
 CMakeFiles/Dark_Museum.dir/src/app.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/src/app.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\app.c > CMakeFiles\Dark_Museum.dir\src\app.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\app.c > CMakeFiles\Dark_Museum.dir\src\app.c.i
 
 CMakeFiles/Dark_Museum.dir/src/app.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/src/app.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\app.c -o CMakeFiles\Dark_Museum.dir\src\app.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\app.c -o CMakeFiles\Dark_Museum.dir\src\app.c.s
 
 CMakeFiles/Dark_Museum.dir/src/game.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/src/game.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/src/game.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/src/game.c
+CMakeFiles/Dark_Museum.dir/src/game.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/game.c
 CMakeFiles/Dark_Museum.dir/src/game.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/Dark_Museum.dir/src/game.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/game.c.obj -MF CMakeFiles\Dark_Museum.dir\src\game.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\game.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\game.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/Dark_Museum.dir/src/game.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/game.c.obj -MF CMakeFiles\Dark_Museum.dir\src\game.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\game.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\game.c
 
 CMakeFiles/Dark_Museum.dir/src/game.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/src/game.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\game.c > CMakeFiles\Dark_Museum.dir\src\game.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\game.c > CMakeFiles\Dark_Museum.dir\src\game.c.i
 
 CMakeFiles/Dark_Museum.dir/src/game.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/src/game.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\game.c -o CMakeFiles\Dark_Museum.dir\src\game.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\game.c -o CMakeFiles\Dark_Museum.dir\src\game.c.s
 
 CMakeFiles/Dark_Museum.dir/src/render.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/src/render.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/src/render.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/src/render.c
+CMakeFiles/Dark_Museum.dir/src/render.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/render.c
 CMakeFiles/Dark_Museum.dir/src/render.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/Dark_Museum.dir/src/render.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/render.c.obj -MF CMakeFiles\Dark_Museum.dir\src\render.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\render.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\render.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/Dark_Museum.dir/src/render.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/render.c.obj -MF CMakeFiles\Dark_Museum.dir\src\render.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\render.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\render.c
 
 CMakeFiles/Dark_Museum.dir/src/render.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/src/render.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\render.c > CMakeFiles\Dark_Museum.dir\src\render.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\render.c > CMakeFiles\Dark_Museum.dir\src\render.c.i
 
 CMakeFiles/Dark_Museum.dir/src/render.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/src/render.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\render.c -o CMakeFiles\Dark_Museum.dir\src\render.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\render.c -o CMakeFiles\Dark_Museum.dir\src\render.c.s
 
 CMakeFiles/Dark_Museum.dir/src/collision.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/src/collision.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/src/collision.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/src/collision.c
+CMakeFiles/Dark_Museum.dir/src/collision.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/collision.c
 CMakeFiles/Dark_Museum.dir/src/collision.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/Dark_Museum.dir/src/collision.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/collision.c.obj -MF CMakeFiles\Dark_Museum.dir\src\collision.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\collision.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\collision.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/Dark_Museum.dir/src/collision.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/collision.c.obj -MF CMakeFiles\Dark_Museum.dir\src\collision.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\collision.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\collision.c
 
 CMakeFiles/Dark_Museum.dir/src/collision.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/src/collision.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\collision.c > CMakeFiles\Dark_Museum.dir\src\collision.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\collision.c > CMakeFiles\Dark_Museum.dir\src\collision.c.i
 
 CMakeFiles/Dark_Museum.dir/src/collision.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/src/collision.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\collision.c -o CMakeFiles\Dark_Museum.dir\src\collision.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\collision.c -o CMakeFiles\Dark_Museum.dir\src\collision.c.s
 
 CMakeFiles/Dark_Museum.dir/src/math3d.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/src/math3d.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/src/math3d.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/src/math3d.c
+CMakeFiles/Dark_Museum.dir/src/math3d.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/math3d.c
 CMakeFiles/Dark_Museum.dir/src/math3d.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/Dark_Museum.dir/src/math3d.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/math3d.c.obj -MF CMakeFiles\Dark_Museum.dir\src\math3d.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\math3d.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\math3d.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/Dark_Museum.dir/src/math3d.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/math3d.c.obj -MF CMakeFiles\Dark_Museum.dir\src\math3d.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\math3d.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\math3d.c
 
 CMakeFiles/Dark_Museum.dir/src/math3d.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/src/math3d.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\math3d.c > CMakeFiles\Dark_Museum.dir\src\math3d.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\math3d.c > CMakeFiles\Dark_Museum.dir\src\math3d.c.i
 
 CMakeFiles/Dark_Museum.dir/src/math3d.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/src/math3d.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\math3d.c -o CMakeFiles\Dark_Museum.dir\src\math3d.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\math3d.c -o CMakeFiles\Dark_Museum.dir\src\math3d.c.s
 
 CMakeFiles/Dark_Museum.dir/src/texture.c.obj: CMakeFiles/Dark_Museum.dir/flags.make
 CMakeFiles/Dark_Museum.dir/src/texture.c.obj: CMakeFiles/Dark_Museum.dir/includes_C.rsp
-CMakeFiles/Dark_Museum.dir/src/texture.c.obj: C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/Dark_Museum/src/texture.c
+CMakeFiles/Dark_Museum.dir/src/texture.c.obj: C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/texture.c
 CMakeFiles/Dark_Museum.dir/src/texture.c.obj: CMakeFiles/Dark_Museum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/Dark_Museum.dir/src/texture.c.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/texture.c.obj -MF CMakeFiles\Dark_Museum.dir\src\texture.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\texture.c.obj -c C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\texture.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/Dark_Museum.dir/src/texture.c.obj"
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Dark_Museum.dir/src/texture.c.obj -MF CMakeFiles\Dark_Museum.dir\src\texture.c.obj.d -o CMakeFiles\Dark_Museum.dir\src\texture.c.obj -c C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\texture.c
 
 CMakeFiles/Dark_Museum.dir/src/texture.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Dark_Museum.dir/src/texture.c.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\texture.c > CMakeFiles\Dark_Museum.dir\src\texture.c.i
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\texture.c > CMakeFiles\Dark_Museum.dir\src\texture.c.i
 
 CMakeFiles/Dark_Museum.dir/src/texture.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Dark_Museum.dir/src/texture.c.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\src\texture.c -o CMakeFiles\Dark_Museum.dir\src\texture.c.s
+	C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\src\texture.c -o CMakeFiles\Dark_Museum.dir\src\texture.c.s
 
 # Object files for target Dark_Museum
 Dark_Museum_OBJECTS = \
@@ -200,7 +200,7 @@ Dark_Museum.exe: CMakeFiles/Dark_Museum.dir/build.make
 Dark_Museum.exe: CMakeFiles/Dark_Museum.dir/linkLibs.rsp
 Dark_Museum.exe: CMakeFiles/Dark_Museum.dir/objects1.rsp
 Dark_Museum.exe: CMakeFiles/Dark_Museum.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable Dark_Museum.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable Dark_Museum.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\Dark_Museum.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -212,6 +212,6 @@ CMakeFiles/Dark_Museum.dir/clean:
 .PHONY : CMakeFiles/Dark_Museum.dir/clean
 
 CMakeFiles/Dark_Museum.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\Dark_Museum\cmake-build-debug\CMakeFiles\Dark_Museum.dir\DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug C:\Users\au095374\Downloads\c_sdk_220203\c_sdk_220203\Dark_Museum\cmake-build-debug\CMakeFiles\Dark_Museum.dir\DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/Dark_Museum.dir/depend
 

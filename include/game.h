@@ -5,7 +5,22 @@
 #include "collision.h"
 
 #define MAX_COLLIDERS 256
-#define MAX_LIGHT_POINTS 8
+#define MAX_LIGHT_POINTS 16
+#define MAX_MAP_OBJECTS 128
+
+typedef enum {
+    OBJ_COLUMN,
+    OBJ_PEDESTAL,
+    OBJ_VITRINE,
+    OBJ_WALL_PANEL,
+    OBJ_BOUNDING_WALL
+} ObjectType;
+
+typedef struct {
+    ObjectType type;
+    Vec3 position;
+    Vec3 scale;
+} MapObject;
 
 typedef struct Player {
     Vec3 position;
@@ -13,21 +28,30 @@ typedef struct Player {
     float pitch;
     float radius;
     float move_speed;
+    float y_velocity;
+    int is_jumping;
 } Player;
 
 typedef struct LightPoint {
     Vec3 position;
     float base_intensity;
     int active;
+    float reach_radius;
 } LightPoint;
 
 typedef struct GameState {
     Player player;
+
     AABB colliders[MAX_COLLIDERS];
     int collider_count;
+
+    MapObject map_objects[MAX_MAP_OBJECTS];
+    int object_count;
+
     LightPoint light_points[MAX_LIGHT_POINTS];
     int light_point_count;
     int current_target;
+
     float darkness_limit;
     float darkness_timer;
     float active_light_strength;

@@ -42,6 +42,9 @@ GLuint load_texture_bmp(const char* filename)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+    // Provide proper alignment to ensure padding issues don't occur when loading BMPs
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     // Some systems prefer GL_RGBA or GL_RGB as internal format
     GLint internalFormat = (surface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
 
@@ -56,6 +59,9 @@ GLuint load_texture_bmp(const char* filename)
         GL_UNSIGNED_BYTE,
         surface->pixels
     );
+
+    // Reset alignment back to default
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     SDL_FreeSurface(surface);
     return texture_id;
