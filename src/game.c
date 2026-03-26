@@ -89,10 +89,8 @@ void toggle_help(void)
         "Shift: faster movement\n"
         "F1: help\n"
         "+ / -: change active light strength\n"
-        "R / Enter: restart after game over\n"
         "ESC: quit\n\n"
-        "Reach the glowing light before your darkness timer runs out.\n"
-        "If you stay too long in the dark, the game ends.",
+        "Explore the museum and collect the glowing relics.",
         NULL
     );
 }
@@ -106,62 +104,51 @@ static void build_level(GameState* game)
     float wall_h = 3.0f;
     float wall_thick = 0.5f;
 
-    // 1. BOUNDING WALLS (20x20 outer shell)
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3(0, 0, -10.25f), vec3(21.0f, wall_h, wall_thick)); // North
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3(0, 0, 10.25f), vec3(21.0f, wall_h, wall_thick));  // South
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3(-10.25f, 0, 0), vec3(wall_thick, wall_h, 20.0f)); // West
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3(10.25f, 0, 0), vec3(wall_thick, wall_h, 20.0f));  // East
+    // Outer Bounding Walls
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(0, 0, -15.0f), vec3(30.0f, wall_h, wall_thick));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(0, 0, 15.0f), vec3(30.0f, wall_h, wall_thick));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(-15.0f, 0, 0), vec3(wall_thick, wall_h, 30.0f));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(15.0f, 0, 0), vec3(wall_thick, wall_h, 30.0f));
 
-    // 2. INTERNAL WALL PANELS (Creating corridors/rooms)
-    // Central cross walls leaving gaps
-    add_map_object(game, OBJ_WALL_PANEL, vec3(-4.0f, 0, -5.0f), vec3(wall_thick, wall_h, 6.0f));
-    add_map_object(game, OBJ_WALL_PANEL, vec3(4.0f, 0, -5.0f), vec3(wall_thick, wall_h, 6.0f));
-    add_map_object(game, OBJ_WALL_PANEL, vec3(-4.0f, 0, 5.0f), vec3(wall_thick, wall_h, 6.0f));
-    add_map_object(game, OBJ_WALL_PANEL, vec3(4.0f, 0, 5.0f), vec3(wall_thick, wall_h, 6.0f));
+    // Foyer (Starting Area)
+    add_map_object(game, OBJ_WALL_PANEL, vec3(0, 0, 6.0f), vec3(18.0f, wall_h, wall_thick));
 
-    add_map_object(game, OBJ_WALL_PANEL, vec3(-5.0f, 0, -4.0f), vec3(6.0f, wall_h, wall_thick));
-    add_map_object(game, OBJ_WALL_PANEL, vec3(5.0f, 0, -4.0f), vec3(6.0f, wall_h, wall_thick));
-    add_map_object(game, OBJ_WALL_PANEL, vec3(-5.0f, 0, 4.0f), vec3(6.0f, wall_h, wall_thick));
-    add_map_object(game, OBJ_WALL_PANEL, vec3(5.0f, 0, 4.0f), vec3(6.0f, wall_h, wall_thick));
-
-    // 3. COLUMNS (Corners and decorations)
+    // Central Hall
     Vec3 col_scale = vec3(0.8f, wall_h, 0.8f);
     add_map_object(game, OBJ_COLUMN, vec3(-4.0f, 0, -4.0f), col_scale);
     add_map_object(game, OBJ_COLUMN, vec3(4.0f, 0, -4.0f), col_scale);
     add_map_object(game, OBJ_COLUMN, vec3(-4.0f, 0, 4.0f), col_scale);
     add_map_object(game, OBJ_COLUMN, vec3(4.0f, 0, 4.0f), col_scale);
 
-    // 4. PEDESTALS & VITRINES & LIGHTS
-    Vec3 ped_scale = vec3(1.2f, 1.2f, 1.2f);
-    Vec3 vit_scale = vec3(1.4f, 2.0f, 1.4f);
+    // Left Wing (Sculpture Hall)
+    add_map_object(game, OBJ_WALL_PANEL, vec3(-7.0f, 0, 0.0f), vec3(wall_thick, wall_h, 8.0f));
+    add_map_object(game, OBJ_PEDESTAL, vec3(-11.0f, 0, -2.0f), vec3(1.5f, 1.5f, 1.5f));
+    add_map_object(game, OBJ_PEDESTAL, vec3(-11.0f, 0, 2.0f), vec3(1.5f, 1.5f, 1.5f));
 
-    // Center starting light
-    add_light(game, vec3(0.0f, 1.5f, 0.0f), 2.0f, 0.5f);
+    // Right Wing (Vitrine Section)
+    add_map_object(game, OBJ_WALL_PANEL, vec3(7.0f, 0, 0.0f), vec3(wall_thick, wall_h, 8.0f));
+    add_map_object(game, OBJ_VITRINE, vec3(11.0f, 0, -2.0f), vec3(2.0f, 1.8f, 2.0f));
+    add_map_object(game, OBJ_VITRINE, vec3(11.0f, 0, 2.0f), vec3(2.0f, 1.8f, 2.0f));
 
-    // North Room
-    add_map_object(game, OBJ_PEDESTAL, vec3(0.0f, 0, -8.0f), ped_scale);
-    add_light(game, vec3(0.0f, 1.8f, -8.0f), 1.5f, 0.3f);
+    // Main Corridor and Final Hall
+    add_map_object(game, OBJ_WALL_PANEL, vec3(0, 0, -6.0f), vec3(8.0f, wall_h, wall_thick));
+    add_map_object(game, OBJ_COLUMN, vec3(-2.0f, 0, -10.0f), col_scale);
+    add_map_object(game, OBJ_COLUMN, vec3(2.0f, 0, -10.0f), col_scale);
 
-    // South Room
-    add_map_object(game, OBJ_VITRINE, vec3(0.0f, 0, 8.0f), vit_scale);
-    add_light(game, vec3(0.0f, 1.0f, 8.0f), 1.8f, 0.3f);
+    // Light positions
+    add_light(game, vec3(0.0f, 1.5f, 10.0f), 2.0f, 0.4f); // Foyer
+    add_light(game, vec3(0.0f, 1.5f, 0.0f), 2.0f, 0.4f);   // Central Hall
+    add_light(game, vec3(-11.0f, 2.0f, 0.0f), 1.8f, 0.4f); // Sculpture Hall
+    add_light(game, vec3(11.0f, 2.2f, 0.0f), 1.8f, 0.4f);  // Vitrine Section
+    add_light(game, vec3(0.0f, 1.5f, -13.0f), 2.0f, 0.4f); // Final Hall
+    add_light(game, vec3(-5.0f, 1.5f, 5.0f), 1.5f, 0.4f);  // Corner
+    add_light(game, vec3(5.0f, 1.5f, 5.0f), 1.5f, 0.4f);   // Corner
+    add_light(game, vec3(-5.0f, 1.5f, -5.0f), 1.5f, 0.4f); // Corner
+    add_light(game, vec3(5.0f, 1.5f, -5.0f), 1.5f, 0.4f);  // Corner
+    add_light(game, vec3(-13.0f, 1.5f, -13.0f), 1.5f, 0.4f); // Far Corner
+    add_light(game, vec3(13.0f, 1.5f, -13.0f), 1.5f, 0.4f);  // Far Corner
+    add_light(game, vec3(0.0f, 1.5f, -8.0f), 1.5f, 0.4f);   // Main Corridor
 
-    // West Room
-    add_map_object(game, OBJ_PEDESTAL, vec3(-8.0f, 0, 0.0f), ped_scale);
-    add_light(game, vec3(-8.0f, 1.8f, 0.0f), 1.5f, 0.3f);
-
-    // East Room
-    add_map_object(game, OBJ_VITRINE, vec3(8.0f, 0, 0.0f), vit_scale);
-    add_light(game, vec3(8.0f, 1.0f, 0.0f), 1.8f, 0.3f);
-
-    // Corners
-    add_map_object(game, OBJ_PEDESTAL, vec3(-8.0f, 0, -8.0f), ped_scale);
-    add_light(game, vec3(-8.0f, 1.8f, -8.0f), 1.5f, 0.3f);
-
-    add_map_object(game, OBJ_PEDESTAL, vec3(8.0f, 0, 8.0f), ped_scale);
-    add_light(game, vec3(8.0f, 1.8f, 8.0f), 1.5f, 0.3f);
-
-    // Set initial target
     set_active_light(game, 0);
 }
 
@@ -173,7 +160,7 @@ void init_game(GameState* game)
 
 void reset_game(GameState* game)
 {
-    game->player.position = vec3(0.0f, PLAYER_HEIGHT, 0.0f);
+    game->player.position = vec3(0.0f, PLAYER_HEIGHT, 8.0f);
     game->player.yaw = 0.0f;
     game->player.pitch = 0.0f;
     game->player.radius = 0.35f;
@@ -181,8 +168,6 @@ void reset_game(GameState* game)
     game->player.y_velocity = 0.0f;
     game->player.is_jumping = 0;
 
-    game->darkness_limit = 15.0f;
-    game->darkness_timer = game->darkness_limit;
     game->active_light_strength = 2.0f;
     game->game_over = 0;
     game->win_counter = 0;
@@ -290,7 +275,6 @@ static void update_darkness(GameState* game, float dt)
     float dist = vec3_length(to_target);
 
     if (dist <= target->reach_radius) {
-        game->darkness_timer = game->darkness_limit;
         game->win_counter++;
 
         // Pick a random new target that isn't the current one
@@ -300,19 +284,6 @@ static void update_darkness(GameState* game, float dt)
         } while (next_target == game->current_target && game->light_point_count > 1);
 
         set_active_light(game, next_target);
-    } else {
-        game->darkness_timer -= dt;
-        if (game->darkness_timer <= 0.0f) {
-            game->darkness_timer = 0.0f;
-            game->game_over = 1;
-
-            SDL_ShowSimpleMessageBox(
-                SDL_MESSAGEBOX_WARNING,
-                "Game Over",
-                "The darkness caught you.\n\nPress R or Enter to restart.",
-                NULL
-            );
-        }
     }
 }
 

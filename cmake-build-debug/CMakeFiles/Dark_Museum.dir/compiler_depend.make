@@ -481,6 +481,7 @@ CMakeFiles/Dark_Museum.dir/src/texture.c.obj: C:/Users/au095374/Downloads/c_sdk_
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/begin_code.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/close_code.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/sdl.h \
+  c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/sdl_opengl.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdint.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdio.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdlib.h \
@@ -550,6 +551,8 @@ c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/gl/gl.h:
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sys/types.h:
 
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/SDL_platform.h:
+
+c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/sdl_opengl.h:
 
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/SDL_hidapi.h:
 

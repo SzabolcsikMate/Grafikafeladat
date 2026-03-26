@@ -52,8 +52,6 @@ typedef struct GameState {
     int light_point_count;
     int current_target;
 
-    float darkness_limit;
-    float darkness_timer;
     float active_light_strength;
     int game_over;
     int win_counter;

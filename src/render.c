@@ -123,6 +123,7 @@ static void draw_textured_box(Vec3 min, Vec3 max, GLuint texture_id, float tex_s
 static void draw_textured_floor(GLuint texture_id)
 {
     glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     // Lighter floor color
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -301,8 +302,8 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
 
     snprintf(
         title, sizeof(title),
-        "Dark Museum | Timer: %.1f | Relics Found: %d%s",
-        game->darkness_timer, game->win_counter,
+        "Dark Museum | Relics Found: %d%s",
+        game->win_counter,
         game->game_over ? " | GAME OVER - Press R or Enter" : ""
     );
     SDL_SetWindowTitle(window, title);
