@@ -5,12 +5,16 @@
 #include "render.h"
 #include "texture.h"
 
-int init_app(App *app) {
+int init_app(App* app)
+{
     app->window = NULL;
     app->gl_context = NULL;
     app->running = 1;
     app->width = 1280;
     app->height = 720;
+    app->floor_texture = 0;
+    app->wall_texture = 0;
+    app->ceiling_texture = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL init failed: %s\n", SDL_GetError());
@@ -51,16 +55,15 @@ int init_app(App *app) {
     resize_viewport(app->width, app->height);
     init_game(&app->game);
 
-    // Kérésnek megfelelően visszaállítva a régi biztonságos betöltési mód a ../ részekkel,
-    // hogy a CLion futtatási környezetből (cmake-build-debug mappából) is biztosan menjen
+    /* Textúrák betöltése, CLionból és sima futtatásból is működjön */
     app->floor_texture = load_texture_bmp("../assets/textures/floor.bmp");
     if (!app->floor_texture) {
-         app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
+        app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
     }
 
     app->wall_texture = load_texture_bmp("../assets/textures/wall.bmp");
     if (!app->wall_texture) {
-         app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
+        app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
     }
 
     app->ceiling_texture = load_texture_bmp("../assets/textures/ceiling.bmp");
@@ -68,57 +71,57 @@ int init_app(App *app) {
         app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
     }
 
-    if (app->floor_texture == 0) {
+    if (!app->floor_texture) {
         fprintf(stderr, "Warning: floor texture not loaded.\n");
     }
 
-    if (app->wall_texture == 0) {
+    if (!app->wall_texture) {
         fprintf(stderr, "Warning: wall texture not loaded.\n");
     }
 
-    if (app->ceiling_texture == 0) {
+    if (!app->ceiling_texture) {
         fprintf(stderr, "Warning: ceiling texture not loaded.\n");
     }
 
     return 1;
 }
 
-void run_app(App *app) {
+void run_app(App* app)
+{
     Uint32 last_ticks = SDL_GetTicks();
-    const unsigned char *key_state;
-    Uint32 current_ticks;
-    float dt;
-    int mouse_dx;
-    int mouse_dy;
-    SDL_Event event;
 
     while (app->running) {
-        mouse_dx = 0;
-        mouse_dy = 0;
+        SDL_Event event;
+        Uint32 current_ticks;
+        float dt;
+        int mouse_dx = 0;
+        int mouse_dy = 0;
+        const unsigned char* key_state;
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 app->running = 0;
-            } else if (event.type == SDL_WINDOWEVENT) {
+            }
+            else if (event.type == SDL_WINDOWEVENT) {
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     app->width = event.window.data1;
                     app->height = event.window.data2;
                     resize_viewport(app->width, app->height);
                 }
-            } else if (event.type == SDL_MOUSEMOTION) {
+            }
+            else if (event.type == SDL_MOUSEMOTION) {
                 mouse_dx += event.motion.xrel;
                 mouse_dy += event.motion.yrel;
-            } else if (event.type == SDL_KEYDOWN) {
+            }
+            else if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_F1) {
                     toggle_help();
-                } else if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    app->running = 0;
                 }
             }
         }
 
         current_ticks = SDL_GetTicks();
-        dt = (float) (current_ticks - last_ticks) / 1000.0f;
+        dt = (float)(current_ticks - last_ticks) / 1000.0f;
         last_ticks = current_ticks;
 
         if (dt > 0.05f) {
@@ -126,15 +129,30 @@ void run_app(App *app) {
         }
 
         key_state = SDL_GetKeyboardState(NULL);
-        update_game(&app->game, dt, key_state, mouse_dx, mouse_dy, &app->running);
 
-        render_scene(app->window, &app->game, app->floor_texture, app->wall_texture, app->ceiling_texture);
+        update_game(
+            &app->game,
+            dt,
+            key_state,
+            mouse_dx,
+            mouse_dy,
+            &app->running
+        );
+
+        render_scene(
+            app->window,
+            &app->game,
+            app->floor_texture,
+            app->wall_texture,
+            app->ceiling_texture
+        );
 
         SDL_GL_SwapWindow(app->window);
     }
 }
 
-void destroy_app(App *app) {
+void destroy_app(App* app)
+{
     if (app->floor_texture) {
         glDeleteTextures(1, &app->floor_texture);
         app->floor_texture = 0;

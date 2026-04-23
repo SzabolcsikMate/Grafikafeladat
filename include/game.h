@@ -34,9 +34,11 @@ typedef struct Player {
 
 typedef struct LightPoint {
     Vec3 position;
-    float base_intensity;
+    float current_intensity;
     int active;
+    int collected;
     float reach_radius;
+    float safe_radius;
 } LightPoint;
 
 typedef struct GameState {
@@ -52,7 +54,9 @@ typedef struct GameState {
     int light_point_count;
     int current_target;
 
-    float active_light_strength;
+    float time_remaining;
+    float max_time;
+
     int game_over;
     int win_counter;
 } GameState;

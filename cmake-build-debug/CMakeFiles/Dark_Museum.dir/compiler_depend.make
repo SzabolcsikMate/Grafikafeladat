@@ -273,7 +273,6 @@ CMakeFiles/Dark_Museum.dir/src/game.c.obj: C:/Users/au095374/Downloads/c_sdk_220
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdint.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdlib.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sys/types.h \
-  c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/time.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/w32api.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/lib/gcc/mingw32/6.3.0/include/avx2intrin.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/lib/gcc/mingw32/6.3.0/include/avx512bwintrin.h \
@@ -481,7 +480,6 @@ CMakeFiles/Dark_Museum.dir/src/texture.c.obj: C:/Users/au095374/Downloads/c_sdk_
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/begin_code.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/close_code.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/sdl.h \
-  c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/sdl_opengl.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdint.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdio.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/stdlib.h \
@@ -551,8 +549,6 @@ c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/gl/gl.h:
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sys/types.h:
 
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/SDL_platform.h:
-
-c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/sdl_opengl.h:
 
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/sdl2/SDL_hidapi.h:
 
@@ -741,8 +737,6 @@ C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/render
 C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/texture.h:
 
 C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/collision.c:
-
-c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/time.h:
 
 C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/math3d.c:
 
