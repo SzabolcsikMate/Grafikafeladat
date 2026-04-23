@@ -13,6 +13,7 @@ add_executable(Dark_Museum
         src/collision.c
         src/math3d.c
         src/texture.c
+        src/model.c
 )
 
 target_include_directories(Dark_Museum PRIVATE
