@@ -97,10 +97,11 @@ CMakeFiles/Dark_Museum.dir/src/app.c.obj: \
  c:\users\au095374\downloads\c_sdk_220203\c_sdk_220203\mingw\include\sdl2\SDL_version.h \
  c:\users\au095374\downloads\c_sdk_220203\c_sdk_220203\mingw\include\sdl2\SDL_locale.h \
  c:\users\au095374\downloads\c_sdk_220203\c_sdk_220203\mingw\include\sdl2\SDL_misc.h \
- c:\users\au095374\downloads\c_sdk_220203\c_sdk_220203\mingw\include\gl\gl.h \
  C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/app.h \
+ c:\users\au095374\downloads\c_sdk_220203\c_sdk_220203\mingw\include\gl\gl.h \
  C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/game.h \
  C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/math3d.h \
  C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/collision.h \
  C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/render.h \
- C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/texture.h
+ C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/texture.h \
+ C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/model.h

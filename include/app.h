@@ -16,6 +16,7 @@ typedef struct App {
     GLuint floor_texture;
     GLuint wall_texture;
     GLuint ceiling_texture;
+    GLuint lamp_model; /* ÚJ */
 } App;
 
 int init_app(App* app);

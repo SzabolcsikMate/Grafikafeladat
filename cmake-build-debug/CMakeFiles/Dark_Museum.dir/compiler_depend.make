@@ -107,6 +107,7 @@ CMakeFiles/Dark_Museum.dir/src/app.c.obj: C:/Users/au095374/Downloads/c_sdk_2202
   C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/collision.h \
   C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/game.h \
   C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/math3d.h \
+  C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/model.h \
   C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/render.h \
   C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/texture.h \
   c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/include/_mingw.h \
@@ -731,6 +732,8 @@ c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/lib/gcc/mingw32/6.3.
 c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/lib/gcc/mingw32/6.3.0/include/xtestintrin.h:
 
 C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/src/app.c:
+
+C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/model.h:
 
 C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/Dark_Museum/include/render.h:
 

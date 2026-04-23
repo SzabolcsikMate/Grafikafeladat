@@ -75,6 +75,8 @@ static void draw_textured_box(Vec3 min, Vec3 max, GLuint texture_id, float tex_s
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // FIX: Set color to white so the texture appears in its original colors
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_QUADS);
@@ -117,6 +119,7 @@ static void draw_textured_box(Vec3 min, Vec3 max, GLuint texture_id, float tex_s
 
     glEnd();
 
+    glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
 
@@ -125,6 +128,8 @@ static void draw_textured_floor(GLuint texture_id)
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // FIX: Set color to white
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_QUADS);
@@ -135,6 +140,7 @@ static void draw_textured_floor(GLuint texture_id)
     glTexCoord2f(0.0f, 12.0f); glVertex3f(-18.0f, 0.0f, -18.0f);
     glEnd();
 
+    glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
 
@@ -143,6 +149,8 @@ static void draw_textured_ceiling(GLuint texture_id)
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // FIX: Set color to white
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_QUADS);
@@ -153,6 +161,7 @@ static void draw_textured_ceiling(GLuint texture_id)
     glTexCoord2f(0.0f, 12.0f); glVertex3f(-18.0f, 3.0f, 18.0f);
     glEnd();
 
+    glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
 
@@ -191,28 +200,38 @@ static void draw_vitrine_translucent(Vec3 min, Vec3 max)
     draw_box(vec3(min.x - 0.05f, 0.0f, min.z - 0.05f), vec3(max.x + 0.05f, 0.2f, max.z + 0.05f), 0.2f, 0.2f, 0.22f);
 }
 
-static void draw_light_marker(const LightPoint* light, float pulse)
+static void draw_lamp_object(const LightPoint* light, float pulse, GLuint lamp_model)
 {
-    float sx = light->active ? (0.28f + 0.08f * pulse) : 0.16f;
-
     glPushMatrix();
     glTranslatef(light->position.x, light->position.y, light->position.z);
 
+    // Scale down the model slightly
+    glScalef(0.5f, 0.5f, 0.5f);
+
     if (light->active) {
+        // Active target is glowing
         glDisable(GL_LIGHTING);
-        glColor3f(1.0f, 0.95f, 0.45f);
+        glColor3f(1.0f, 0.9f + pulse * 0.1f, 0.4f);
     } else {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.35f, 0.35f, 0.25f);
+        // Inactive target is dim
+        glEnable(GL_LIGHTING);
+        glColor3f(0.4f, 0.4f, 0.3f);
     }
 
-    glBegin(GL_QUADS);
-    glVertex3f(-sx, -sx, 0.0f); glVertex3f(sx, -sx, 0.0f);
-    glVertex3f(sx, sx, 0.0f);   glVertex3f(-sx, sx, 0.0f);
-
-    glVertex3f(0.0f, -sx, sx);  glVertex3f(0.0f, -sx, -sx);
-    glVertex3f(0.0f, sx, -sx);  glVertex3f(0.0f, sx, sx);
-    glEnd();
+    if (lamp_model != 0) {
+        glCallList(lamp_model);
+    } else {
+        // Fallback cube if model failed to load
+        glBegin(GL_QUADS);
+        float s = 0.2f;
+        glVertex3f(-s, -s, s); glVertex3f(s, -s, s); glVertex3f(s, s, s); glVertex3f(-s, s, s);
+        glVertex3f(-s, -s, -s); glVertex3f(-s, s, -s); glVertex3f(s, s, -s); glVertex3f(s, -s, -s);
+        glVertex3f(-s, s, -s); glVertex3f(-s, s, s); glVertex3f(s, s, s); glVertex3f(s, s, -s);
+        glVertex3f(-s, -s, -s); glVertex3f(s, -s, -s); glVertex3f(s, -s, s); glVertex3f(-s, -s, s);
+        glVertex3f(s, -s, -s); glVertex3f(s, s, -s); glVertex3f(s, s, s); glVertex3f(s, -s, s);
+        glVertex3f(-s, -s, -s); glVertex3f(-s, -s, s); glVertex3f(-s, s, s); glVertex3f(-s, s, -s);
+        glEnd();
+    }
 
     glEnable(GL_LIGHTING);
     glPopMatrix();
@@ -220,7 +239,8 @@ static void draw_light_marker(const LightPoint* light, float pulse)
 
 void init_render_state(void)
 {
-    GLfloat ambient[] = {0.12f, 0.12f, 0.14f, 1.0f};
+    // Megemelt globális fény, hogy jobban látszódjanak a textúrák a sötétben is
+    GLfloat ambient[] = {0.35f, 0.35f, 0.35f, 1.0f};
     GLfloat specular[] = {0.20f, 0.20f, 0.20f, 1.0f};
     GLfloat fog_color[] = {0.03f, 0.03f, 0.04f, 1.0f};
 
@@ -257,7 +277,7 @@ void resize_viewport(int width, int height)
     set_perspective(70.0f, (float)width / (float)height, 0.1f, 60.0f);
 }
 
-void render_scene(SDL_Window* window, const GameState* game, GLuint floor_texture, GLuint wall_texture, GLuint ceiling_texture)
+void render_scene(SDL_Window* window, const GameState* game, GLuint floor_texture, GLuint wall_texture, GLuint ceiling_texture, GLuint lamp_model)
 {
     int i;
     Uint32 ticks;
@@ -291,8 +311,6 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
             1.0f
         };
 
-        /* JAVÍTVA: A game->active_light_strength-re már nincs szükségünk,
-           hiszen a light_points tömb minden eleme tartalmazza a saját intensity-jét */
         GLfloat intensity = game->light_points[target_idx].current_intensity + pulse * 0.15f;
         GLfloat light_diffuse[] = {
             intensity,
@@ -345,7 +363,7 @@ void render_scene(SDL_Window* window, const GameState* game, GLuint floor_textur
     }
 
     for (i = 0; i < game->light_point_count; i++) {
-        draw_light_marker(&game->light_points[i], pulse);
+        draw_lamp_object(&game->light_points[i], pulse, lamp_model);
     }
 
     if (game->game_over) {

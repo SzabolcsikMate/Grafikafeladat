@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <GL/gl.h>
 #include "app.h"
 #include "render.h"
 #include "texture.h"
+#include "model.h"
 
 int init_app(App* app)
 {
@@ -15,6 +15,7 @@ int init_app(App* app)
     app->floor_texture = 0;
     app->wall_texture = 0;
     app->ceiling_texture = 0;
+    app->lamp_model = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL init failed: %s\n", SDL_GetError());
@@ -83,6 +84,16 @@ int init_app(App* app)
         fprintf(stderr, "Warning: ceiling texture not loaded.\n");
     }
 
+    /* ÚJ: GLB modell betöltése */
+    app->lamp_model = load_glb_model("../assets/models/lamp.glb");
+    if (!app->lamp_model) {
+        app->lamp_model = load_glb_model("assets/models/lamp.glb");
+    }
+
+    if (!app->lamp_model) {
+        fprintf(stderr, "Warning: lamp model not loaded.\n");
+    }
+
     return 1;
 }
 
@@ -144,7 +155,8 @@ void run_app(App* app)
             &app->game,
             app->floor_texture,
             app->wall_texture,
-            app->ceiling_texture
+            app->ceiling_texture,
+            app->lamp_model /* ÚJ */
         );
 
         SDL_GL_SwapWindow(app->window);
@@ -166,6 +178,12 @@ void destroy_app(App* app)
     if (app->ceiling_texture) {
         glDeleteTextures(1, &app->ceiling_texture);
         app->ceiling_texture = 0;
+    }
+
+    /* ÚJ: Modell törlése */
+    if (app->lamp_model) {
+        glDeleteLists(app->lamp_model, 1);
+        app->lamp_model = 0;
     }
 
     if (app->gl_context) {
