@@ -13,5 +13,6 @@ Vec3 vec3_sub(Vec3 a, Vec3 b);
 Vec3 vec3_scale(Vec3 v, float s);
 float vec3_length(Vec3 v);
 Vec3 vec3_normalize(Vec3 v);
+float vec3_dot(Vec3 a, Vec3 b);
 
 #endif

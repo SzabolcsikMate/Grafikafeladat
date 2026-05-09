@@ -1,72 +1,78 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include "texture.h"
 
-#ifndef GL_BGR
-#define GL_BGR 0x80E0
-#endif
-
-#ifndef GL_BGRA
-#define GL_BGRA 0x80E1
-#endif
-
 GLuint load_texture_bmp(const char* filename)
 {
-    SDL_Surface* surface;
+    SDL_Surface* loaded_surface;
+    SDL_Surface* converted_surface;
     GLuint texture_id;
-    GLint format;
+    unsigned char* pixels;
+    int row_size;
+    int y;
 
-    surface = SDL_LoadBMP(filename);
-    if (!surface) {
-        fprintf(stderr, "Failed to load BMP texture: %s\n", filename);
+    loaded_surface = SDL_LoadBMP(filename);
+    if (!loaded_surface) {
+        fprintf(stderr, "Failed to load BMP texture: %s | %s\n", filename, SDL_GetError());
         return 0;
     }
 
-    if (surface->format->BytesPerPixel == 4) {
-        format = GL_BGRA;
-    } else if (surface->format->BytesPerPixel == 3) {
-        format = GL_BGR;
-    } else {
-        fprintf(stderr, "Unsupported BMP format: %s\n", filename);
-        SDL_FreeSurface(surface);
+    converted_surface = SDL_ConvertSurfaceFormat(loaded_surface, SDL_PIXELFORMAT_RGB24, 0);
+    SDL_FreeSurface(loaded_surface);
+
+    if (!converted_surface) {
+        fprintf(stderr, "Failed to convert BMP texture: %s | %s\n", filename, SDL_GetError());
         return 0;
+    }
+
+    row_size = converted_surface->w * 3;
+    pixels = (unsigned char*)malloc(row_size * converted_surface->h);
+
+    if (!pixels) {
+        fprintf(stderr, "Out of memory while loading texture: %s\n", filename);
+        SDL_FreeSurface(converted_surface);
+        return 0;
+    }
+
+    for (y = 0; y < converted_surface->h; y++) {
+        memcpy(
+            pixels + y * row_size,
+            (unsigned char*)converted_surface->pixels + y * converted_surface->pitch,
+            row_size
+        );
     }
 
     glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    /* Provide proper alignment to ensure padding issues don't occur when loading BMPs */
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    /* Some systems prefer GL_RGBA or GL_RGB as internal format */
-    GLint internalFormat = (surface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
-
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
-        internalFormat,
-        surface->w,
-        surface->h,
+        GL_RGB,
+        converted_surface->w,
+        converted_surface->h,
         0,
-        format,
+        GL_RGB,
         GL_UNSIGNED_BYTE,
-        surface->pixels
+        pixels
     );
 
-    /* Reset alignment back to default */
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    SDL_FreeSurface(surface);
+    free(pixels);
+    SDL_FreeSurface(converted_surface);
+
+    printf("Loaded texture: %s\n", filename);
+
     return texture_id;
-}
-
-void bind_texture(GLuint texture_id)
-{
-    glBindTexture(GL_TEXTURE_2D, texture_id);
 }

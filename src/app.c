@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <SDL2/SDL.h>
 #include "app.h"
 #include "render.h"
@@ -12,10 +13,15 @@ int init_app(App* app)
     app->running = 1;
     app->width = 1280;
     app->height = 720;
+
+    app->lamp_model = 0;
     app->floor_texture = 0;
     app->wall_texture = 0;
     app->ceiling_texture = 0;
-    app->lamp_model = 0;
+
+    app->in_menu = 1;
+    app->fullscreen = 0;
+    app->inverted_mouse = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL init failed: %s\n", SDL_GetError());
@@ -50,27 +56,19 @@ int init_app(App* app)
     }
 
     SDL_GL_SetSwapInterval(1);
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+
+    SDL_SetRelativeMouseMode(SDL_FALSE);
+    SDL_ShowCursor(SDL_ENABLE);
 
     init_render_state();
     resize_viewport(app->width, app->height);
     init_game(&app->game);
 
-    /* Textúrák betöltése, CLionból és sima futtatásból is működjön */
-    app->floor_texture = load_texture_bmp("../assets/textures/floor.bmp");
-    if (!app->floor_texture) {
-        app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
-    }
+    app->game.inverted_mouse = app->inverted_mouse;
 
-    app->wall_texture = load_texture_bmp("../assets/textures/wall.bmp");
-    if (!app->wall_texture) {
-        app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
-    }
-
-    app->ceiling_texture = load_texture_bmp("../assets/textures/ceiling.bmp");
-    if (!app->ceiling_texture) {
-        app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
-    }
+    app->floor_texture = load_texture_bmp("assets/textures/floor.bmp");
+    app->wall_texture = load_texture_bmp("assets/textures/wall.bmp");
+    app->ceiling_texture = load_texture_bmp("assets/textures/ceiling.bmp");
 
     if (!app->floor_texture) {
         fprintf(stderr, "Warning: floor texture not loaded.\n");
@@ -84,10 +82,10 @@ int init_app(App* app)
         fprintf(stderr, "Warning: ceiling texture not loaded.\n");
     }
 
-    /* ÚJ: GLB modell betöltése */
-    app->lamp_model = load_glb_model("../assets/models/lamp.glb");
+    app->lamp_model = load_glb_model("assets/models/lamp.glb");
+
     if (!app->lamp_model) {
-        app->lamp_model = load_glb_model("assets/models/lamp.glb");
+        app->lamp_model = load_glb_model("../assets/models/lamp.glb");
     }
 
     if (!app->lamp_model) {
@@ -121,12 +119,57 @@ void run_app(App* app)
                 }
             }
             else if (event.type == SDL_MOUSEMOTION) {
-                mouse_dx += event.motion.xrel;
-                mouse_dy += event.motion.yrel;
             }
+
             else if (event.type == SDL_KEYDOWN) {
-                if (event.key.keysym.sym == SDLK_F1) {
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    if (app->in_menu) {
+                        app->running = 0;
+                    } else {
+                        app->in_menu = 1;
+                        SDL_ShowCursor(SDL_ENABLE);
+                        mouse_dx = 0;
+                        mouse_dy = 0;
+                    }
+                }
+
+                if (!app->in_menu && event.key.keysym.sym == SDLK_F1) {
                     toggle_help();
+                }
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                if (app->in_menu && event.button.button == SDL_BUTTON_LEFT) {
+                    int mx = event.button.x;
+                    int my = event.button.y;
+
+                    float x = (float)mx / (float)app->width;
+                    float y = 1.0f - (float)my / (float)app->height;
+
+                    if (x >= 0.34f && x <= 0.66f && y >= 0.56f && y <= 0.65f) {
+                        app->in_menu = 0;
+                        SDL_ShowCursor(SDL_DISABLE);
+                        SDL_WarpMouseInWindow(app->window, app->width / 2, app->height / 2);
+                        mouse_dx = 0;
+                        mouse_dy = 0;
+                    }
+
+                    if (x >= 0.34f && x <= 0.66f && y >= 0.44f && y <= 0.53f) {
+                        app->fullscreen = !app->fullscreen;
+
+                        SDL_SetWindowFullscreen(
+                            app->window,
+                            app->fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0
+                        );
+                    }
+
+                    if (x >= 0.34f && x <= 0.66f && y >= 0.32f && y <= 0.41f) {
+                        app->inverted_mouse = !app->inverted_mouse;
+                        app->game.inverted_mouse = app->inverted_mouse;
+                    }
+
+                    if (x >= 0.34f && x <= 0.66f && y >= 0.20f && y <= 0.29f) {
+                        app->running = 0;
+                    }
                 }
             }
         }
@@ -140,24 +183,56 @@ void run_app(App* app)
         }
 
         key_state = SDL_GetKeyboardState(NULL);
+        if (!app->in_menu) {
+            int mx;
+            int my;
+            int center_x = app->width / 2;
+            int center_y = app->height / 2;
 
-        update_game(
-            &app->game,
-            dt,
-            key_state,
-            mouse_dx,
-            mouse_dy,
-            &app->running
-        );
+            SDL_GetMouseState(&mx, &my);
 
-        render_scene(
-            app->window,
-            &app->game,
-            app->floor_texture,
-            app->wall_texture,
-            app->ceiling_texture,
-            app->lamp_model /* ÚJ */
-        );
+            mouse_dx = mx - center_x;
+            mouse_dy = my - center_y;
+
+            if (mouse_dx > 120) mouse_dx = 120;
+            if (mouse_dx < -120) mouse_dx = -120;
+            if (mouse_dy > 120) mouse_dy = 120;
+            if (mouse_dy < -120) mouse_dy = -120;
+
+            SDL_WarpMouseInWindow(app->window, center_x, center_y);
+        }
+
+
+        if (app->in_menu) {
+            SDL_ShowCursor(SDL_ENABLE);
+
+            mouse_dx = 0;
+            mouse_dy = 0;
+
+            render_menu(app->window, app->fullscreen, app->inverted_mouse);
+        } else {
+            SDL_ShowCursor(SDL_DISABLE);
+
+            app->game.inverted_mouse = app->inverted_mouse;
+
+            update_game(
+                &app->game,
+                dt,
+                key_state,
+                mouse_dx,
+                mouse_dy,
+                &app->running
+            );
+
+            render_scene(
+                app->window,
+                &app->game,
+                app->floor_texture,
+                app->wall_texture,
+                app->ceiling_texture,
+                app->lamp_model
+            );
+        }
 
         SDL_GL_SwapWindow(app->window);
     }
@@ -180,7 +255,6 @@ void destroy_app(App* app)
         app->ceiling_texture = 0;
     }
 
-    /* ÚJ: Modell törlése */
     if (app->lamp_model) {
         glDeleteLists(app->lamp_model, 1);
         app->lamp_model = 0;

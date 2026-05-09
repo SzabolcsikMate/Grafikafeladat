@@ -1,4 +1,4 @@
-set(CMAKE_C_COMPILER "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/gcc.exe")
+set(CMAKE_C_COMPILER "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/gcc.exe")
 set(CMAKE_C_COMPILER_ARG1 "")
 set(CMAKE_C_COMPILER_ID "GNU")
 set(CMAKE_C_COMPILER_VERSION "6.3.0")
@@ -23,14 +23,14 @@ set(CMAKE_C_COMPILER_ARCHITECTURE_ID "i586")
 
 
 
-set(CMAKE_AR "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/ar.exe")
-set(CMAKE_C_COMPILER_AR "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/gcc-ar.exe")
-set(CMAKE_RANLIB "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/ranlib.exe")
-set(CMAKE_C_COMPILER_RANLIB "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/gcc-ranlib.exe")
-set(CMAKE_LINKER "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/ld.exe")
+set(CMAKE_AR "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/ar.exe")
+set(CMAKE_C_COMPILER_AR "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/gcc-ar.exe")
+set(CMAKE_RANLIB "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/ranlib.exe")
+set(CMAKE_C_COMPILER_RANLIB "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/gcc-ranlib.exe")
+set(CMAKE_LINKER "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/bin/ld.exe")
 set(CMAKE_LINKER_LINK "")
 set(CMAKE_LINKER_LLD "")
-set(CMAKE_C_COMPILER_LINKER "c:/users/au095374/downloads/c_sdk_220203/c_sdk_220203/mingw/mingw32/bin/ld.exe")
+set(CMAKE_C_COMPILER_LINKER "c:/users/user/downloads/c_sdk_220203/c_sdk_220203/mingw/mingw32/bin/ld.exe")
 set(CMAKE_C_COMPILER_LINKER_ID "GNU")
 set(CMAKE_C_COMPILER_LINKER_VERSION 2.28)
 set(CMAKE_C_COMPILER_LINKER_FRONTEND_VARIANT GNU)
@@ -78,7 +78,7 @@ endif()
 
 
 
-set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc/mingw32/6.3.0/include;C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/include;C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc/mingw32/6.3.0/include-fixed")
+set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc/mingw32/6.3.0/include;C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/include;C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc/mingw32/6.3.0/include-fixed")
 set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "mingw32;gcc;moldname;mingwex;advapi32;shell32;user32;kernel32;mingw32;gcc;moldname;mingwex")
-set(CMAKE_C_IMPLICIT_LINK_DIRECTORIES "C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc/mingw32/6.3.0;C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc;C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/mingw32/lib;C:/Users/au095374/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib")
+set(CMAKE_C_IMPLICIT_LINK_DIRECTORIES "C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc/mingw32/6.3.0;C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib/gcc;C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/mingw32/lib;C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/MinGW/lib")
 set(CMAKE_C_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")

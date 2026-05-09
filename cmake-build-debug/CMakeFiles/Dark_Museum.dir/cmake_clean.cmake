@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/Dark_Museum.dir/src/game.c.obj.d"
   "CMakeFiles/Dark_Museum.dir/src/math3d.c.obj"
   "CMakeFiles/Dark_Museum.dir/src/math3d.c.obj.d"
+  "CMakeFiles/Dark_Museum.dir/src/model.c.obj"
+  "CMakeFiles/Dark_Museum.dir/src/model.c.obj.d"
   "CMakeFiles/Dark_Museum.dir/src/render.c.obj"
   "CMakeFiles/Dark_Museum.dir/src/render.c.obj.d"
   "CMakeFiles/Dark_Museum.dir/src/texture.c.obj"

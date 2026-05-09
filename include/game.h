@@ -4,16 +4,17 @@
 #include "math3d.h"
 #include "collision.h"
 
-#define MAX_COLLIDERS 256
-#define MAX_LIGHT_POINTS 16
-#define MAX_MAP_OBJECTS 128
+#define MAX_COLLIDERS 512
+#define MAX_LIGHT_POINTS 24
+#define MAX_MAP_OBJECTS 256
 
 typedef enum {
     OBJ_COLUMN,
     OBJ_PEDESTAL,
-    OBJ_VITRINE,
     OBJ_WALL_PANEL,
-    OBJ_BOUNDING_WALL
+    OBJ_BOUNDING_WALL,
+    OBJ_PLATFORM,
+    OBJ_LOW_BLOCK
 } ObjectType;
 
 typedef struct {
@@ -57,8 +58,15 @@ typedef struct GameState {
     float time_remaining;
     float max_time;
 
+    float game_over_fade;
     int game_over;
     int win_counter;
+
+    int selected_light_index;
+    float selected_light_ratio;
+
+    int inverted_mouse;
+
 } GameState;
 
 void init_game(GameState* game);

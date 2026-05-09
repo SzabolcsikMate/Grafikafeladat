@@ -12,11 +12,15 @@ typedef struct App {
     int running;
     int width;
     int height;
+    int in_menu;
+    int fullscreen;
+    int inverted_mouse;
 
     GLuint floor_texture;
     GLuint wall_texture;
     GLuint ceiling_texture;
-    GLuint lamp_model; /* ÚJ */
+    GLuint lamp_model;
+
 } App;
 
 int init_app(App* app);

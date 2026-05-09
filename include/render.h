@@ -6,7 +6,18 @@
 #include "game.h"
 
 void init_render_state(void);
+
 void resize_viewport(int width, int height);
-void render_scene(SDL_Window* window, const GameState* game, GLuint floor_texture, GLuint wall_texture, GLuint ceiling_texture, GLuint lamp_model);
+
+void render_menu(SDL_Window* window, int fullscreen, int inverted_mouse);
+
+void render_scene(
+    SDL_Window* window,
+    const GameState* game,
+    GLuint floor_texture,
+    GLuint wall_texture,
+    GLuint ceiling_texture,
+    GLuint lamp_model
+);
 
 #endif

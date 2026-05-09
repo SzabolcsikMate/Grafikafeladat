@@ -1,0 +1,23 @@
+CMakeFiles/Dark_Museum.dir/src/model.c.obj: \
+ C:\Users\User\Downloads\c_sdk_220203\c_sdk_220203\grafika\src\model.c \
+ C:/Users/User/Downloads/c_sdk_220203/c_sdk_220203/grafika/include/model.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\gl\gl.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\stdio.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\_mingw.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\msvcrtver.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\w32api.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\sdkddkver.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\lib\gcc\mingw32\6.3.0\include\stddef.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\sys/types.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\lib\gcc\mingw32\6.3.0\include\stdarg.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\stdlib.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\lib\gcc\mingw32\6.3.0\include\stdint.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\stdint.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\string.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\strings.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\wchar.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\grafika\include\cgltf.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\assert.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\limits.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\lib\gcc\mingw32\6.3.0\include\float.h \
+ c:\users\user\downloads\c_sdk_220203\c_sdk_220203\mingw\include\float.h

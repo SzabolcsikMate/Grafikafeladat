@@ -37,3 +37,8 @@ Vec3 vec3_normalize(Vec3 v)
 
     return vec3(v.x / len, v.y / len, v.z / len);
 }
+
+float vec3_dot(Vec3 a, Vec3 b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
