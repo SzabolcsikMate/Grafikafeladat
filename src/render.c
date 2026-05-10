@@ -714,8 +714,7 @@ void render_scene(
     GLuint wall_texture,
     GLuint ceiling_texture,
     GLuint lamp_model
-)
-{
+) {
     int i;
     Uint32 ticks;
     float pulse;
@@ -929,8 +928,53 @@ void render_scene(
         draw_lamp_head_glow(game, &game->light_points[i], pulse);
     }
 
-    draw_countdown(game);
-    draw_lamp_power_slider(game);
+    if (!game->game_over && !game->escaped && !game->dying) {
+        draw_countdown(game);
+        draw_lamp_power_slider(game);
+    }
+
+    if (game->darkness_alpha > 0.0f && !game->game_over && !game->escaped) {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_FOG);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor4f(0.0f, 0.0f, 0.0f, game->darkness_alpha);
+
+        glBegin(GL_QUADS);
+        glVertex2f(0.0f, 0.0f);
+        glVertex2f(1.0f, 0.0f);
+        glVertex2f(1.0f, 1.0f);
+        glVertex2f(0.0f, 1.0f);
+        glEnd();
+
+        glDisable(GL_BLEND);
+
+        glPopMatrix();
+
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+
+        glMatrixMode(GL_MODELVIEW);
+
+        glDepthMask(GL_TRUE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_FOG);
+        glEnable(GL_LIGHTING);
+    }
 
     if (game->game_over || game->escaped) {
         draw_end_screen(game);
@@ -1033,7 +1077,8 @@ static void draw_centered_text_px(GLuint font_list, const char* text, float cx, 
         return;
     }
 
-    width = (float)strlen(text) * approx_char_w * 0.80f;
+    width = (float)strlen(text) * approx_char_w;
+
     draw_text_px(font_list, text, cx - width * 0.5f, y, r, g, b);
 }
 
@@ -1051,25 +1096,58 @@ static void draw_menu_background_px(int width, int height)
     draw_ui_rect_px((float)width * 0.82f, (float)height * 0.18f, (float)width * 0.95f, (float)height, 0.025f, 0.015f, 0.008f, 0.65f);
 }
 
+static void draw_gold_ornament(float x, float y)
+{
+    glColor4f(1.0f, 0.72f, 0.18f, 0.95f);
+    glLineWidth(1.4f);
+
+    glBegin(GL_LINES);
+
+    glVertex2f(x - 18.0f, y);
+    glVertex2f(x + 18.0f, y);
+
+    glVertex2f(x, y - 9.0f);
+    glVertex2f(x, y + 9.0f);
+
+    glVertex2f(x - 10.0f, y - 6.0f);
+    glVertex2f(x + 10.0f, y + 6.0f);
+
+    glVertex2f(x - 10.0f, y + 6.0f);
+    glVertex2f(x + 10.0f, y - 6.0f);
+
+    glEnd();
+
+    glLineWidth(1.0f);
+}
+
 static void draw_fancy_button_px(float x1, float y1, float x2, float y2, const char* text)
 {
-    draw_ui_rect_px(x1, y1, x2, y2, 0.012f, 0.008f, 0.005f, 0.86f);
+    float cx = (x1 + x2) * 0.5f;
+    float cy = (y1 + y2) * 0.5f;
 
-    draw_ui_outline_px(x1, y1, x2, y2, 0.70f, 0.42f, 0.15f, 1.0f);
-    draw_ui_outline_px(x1 + 6.0f, y1 + 6.0f, x2 - 6.0f, y2 - 6.0f, 1.0f, 0.68f, 0.25f, 0.78f);
+    draw_ui_rect_px(x1, y1, x2, y2, 0.0f, 0.0f, 0.0f, 0.82f);
 
-    draw_ui_rect_px(x1 + 20.0f, y1 + 5.0f, x2 - 20.0f, y1 + 8.0f, 1.0f, 0.75f, 0.28f, 0.55f);
-    draw_ui_rect_px(x1 + 20.0f, y2 - 8.0f, x2 - 20.0f, y2 - 5.0f, 0.55f, 0.24f, 0.08f, 0.65f);
+    draw_ui_outline_px(x1, y1, x2, y2, 1.0f, 0.66f, 0.12f, 1.0f);
+    draw_ui_outline_px(x1 + 5.0f, y1 + 5.0f, x2 - 5.0f, y2 - 5.0f, 0.85f, 0.46f, 0.08f, 0.95f);
+
+    draw_ui_rect_px(x1 + 22.0f, y1 + 3.0f, x2 - 22.0f, y1 + 5.0f, 1.0f, 0.78f, 0.22f, 0.70f);
+    draw_ui_rect_px(x1 + 22.0f, y2 - 5.0f, x2 - 22.0f, y2 - 3.0f, 1.0f, 0.55f, 0.08f, 0.55f);
+
+    draw_gold_ornament(cx, y1);
+    draw_gold_ornament(cx, y2);
+
+    draw_gold_ornament(x1 + 8.0f, cy);
+    draw_gold_ornament(x2 - 8.0f, cy);
 
     draw_centered_text_px(
         font_mid,
         text,
-        (x1 + x2) * 0.5f,
+        cx,
         y1 + (y2 - y1) * 0.63f,
         20.0f,
-        0.92f,
-        0.78f,
-        0.55f
+        0.96f,
+        0.80f,
+        0.52f
     );
 }
 
@@ -1077,14 +1155,25 @@ static void draw_end_screen(const GameState* game)
 {
     int width = 1280;
     int height = 720;
-
     SDL_Window* window = SDL_GL_GetCurrentWindow();
+
+    float cx;
+    float button_w;
+    float button_h;
+    float title_y;
+    float first_button_y;
 
     if (window != NULL) {
         SDL_GetWindowSize(window, &width, &height);
     }
 
     init_menu_fonts();
+
+    cx = (float)width * 0.5f;
+    button_w = (float)width * 0.42f;
+    button_h = (float)height * 0.095f;
+    title_y = (float)height * 0.28f;
+    first_button_y = (float)height * 0.46f;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_FOG);
@@ -1105,61 +1194,60 @@ static void draw_end_screen(const GameState* game)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     draw_ui_rect_px(
-        0.0f,
-        0.0f,
-        (float)width,
-        (float)height,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.78f
-    );
+    0.0f,
+    0.0f,
+    (float)width,
+    (float)height,
+    0.0f,
+    0.0f,
+    0.0f,
+    1.0f
+);
 
     if (game->escaped) {
         draw_centered_text_px(
             font_big,
             "YOU ESCAPED",
-            (float)width * 0.5f,
-            (float)height * 0.25f,
-            44.0f,
+            cx,
+            title_y,
+            43.0f,
             0.95f,
             0.78f,
             0.25f
         );
     } else {
-        draw_centered_text_px(
-    font_mid,
-    "THE DARKNESS CAUGHT YOU",
-    (float)width * 0.5f,
-    (float)height * 0.25f,
-    23.0f,
-    0.85f,
-    0.08f,
-    0.06f
-);
+        draw_text_px(
+            font_big,
+            "THE DARKNESS CAUGHT YOU",
+            (float)width * 0.17f,
+            title_y,
+            0.92f,
+            0.02f,
+            0.02f
+        );
     }
 
     draw_fancy_button_px(
-        (float)width * 0.34f,
-        (float)height * 0.45f,
-        (float)width * 0.66f,
-        (float)height * 0.54f,
+        cx - button_w * 0.5f,
+        first_button_y,
+        cx + button_w * 0.5f,
+        first_button_y + button_h,
         "RESTART"
     );
 
     draw_fancy_button_px(
-        (float)width * 0.34f,
-        (float)height * 0.58f,
-        (float)width * 0.66f,
-        (float)height * 0.67f,
+        cx - button_w * 0.5f,
+        first_button_y + (float)height * 0.14f,
+        cx + button_w * 0.5f,
+        first_button_y + (float)height * 0.14f + button_h,
         "RETURN TO MENU"
     );
 
     draw_fancy_button_px(
-        (float)width * 0.34f,
-        (float)height * 0.71f,
-        (float)width * 0.66f,
-        (float)height * 0.80f,
+        cx - button_w * 0.5f,
+        first_button_y + (float)height * 0.28f,
+        cx + button_w * 0.5f,
+        first_button_y + (float)height * 0.28f + button_h,
         "EXIT GAME"
     );
 

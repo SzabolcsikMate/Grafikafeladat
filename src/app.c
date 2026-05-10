@@ -259,7 +259,7 @@ void run_app(App* app)
                 app->inverted_mouse
             );
         } else {
-            if (app->game.game_over || app->game.escaped) {
+            if (app->game.game_over || app->game.escaped || app->game.dying) {
                 SDL_SetRelativeMouseMode(SDL_FALSE);
                 SDL_ShowCursor(SDL_ENABLE);
                 mouse_dx = 0;

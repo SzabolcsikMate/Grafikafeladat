@@ -60,6 +60,8 @@ typedef struct GameState {
 
     float game_over_fade;
     int game_over;
+    int dying;
+    float darkness_alpha;
     int win_counter;
 
     int selected_light_index;
@@ -73,6 +75,7 @@ typedef struct GameState {
     Vec3 exit_position;
     float exit_radius;
 
+    float time_left;
 } GameState;
 
 void init_game(GameState* game);

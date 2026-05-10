@@ -472,12 +472,16 @@ void reset_game(GameState* game)
     game->time_remaining = game->max_time;
     game->game_over_fade = 0.0f;
     game->game_over = 0;
+    game->dying = 0;
+    game->darkness_alpha = 0.0f;
     game->win_counter = 0;
     game->escaped = 0;
     game->end_screen = 0;
 
     game->exit_position = vec3(39.8f, 1.0f, -104.0f);
     game->exit_radius = 3.4f;
+
+
 
     build_level(game);
 
@@ -588,7 +592,6 @@ static void handle_movement(GameState* game, float dt, const unsigned char* key_
     }
 
     if (game->player.position.y < -4.0f) {
-        game->game_over = 1;
         game->time_remaining = 0.0f;
     }
 }
@@ -726,16 +729,6 @@ static void refresh_time_in_lit_lamp(GameState* game)
 
 void update_game(GameState* game, float dt, const unsigned char* key_state, int mouse_dx, int mouse_dy, int* quit_requested)
 {
-
-    if (game->escaped) {
-        return;
-    }
-
-    if (key_state[SDL_SCANCODE_ESCAPE]) {
-        *quit_requested = 1;
-        return;
-    }
-
     if (game->escaped) {
         return;
     }
@@ -754,10 +747,22 @@ void update_game(GameState* game, float dt, const unsigned char* key_state, int 
         return;
     }
 
+    if (game->dying) {
+        game->time_remaining = 0.0f;
+        game->darkness_alpha += dt * 0.45f;
+
+        if (game->darkness_alpha >= 1.0f) {
+            game->darkness_alpha = 1.0f;
+            game->game_over = 1;
+            game->game_over_fade = 1.0f;
+        }
+
+        return;
+    }
+
     handle_mouse_look(game, mouse_dx, mouse_dy);
     handle_movement(game, dt, key_state);
     update_light_interaction(game, dt, key_state);
-    refresh_time_in_lit_lamp(game);
 
     if (game->current_target >= 0 &&
         game->current_target < game->light_point_count &&
@@ -765,22 +770,27 @@ void update_game(GameState* game, float dt, const unsigned char* key_state, int 
         if (game->current_target + 1 < game->light_point_count) {
             set_active_light(game, game->current_target + 1);
         }
-    }
+        }
 
     if (game->win_counter >= 10 &&
-       distance_xz(game->player.position, game->exit_position) <= game->exit_radius) {
+        distance_xz(game->player.position, game->exit_position) <= game->exit_radius) {
         game->escaped = 1;
         game->end_screen = 1;
         return;
-       }
+        }
 
     if (!is_inside_any_safe_light(game)) {
         game->time_remaining -= dt;
 
         if (game->time_remaining <= 0.0f) {
             game->time_remaining = 0.0f;
-            game->game_over = 1;
-            game->end_screen = 1;
+            game->dying = 1;
+            game->darkness_alpha = 0.0f;
+            return;
+        }
+    } else {
+        if (game->time_remaining > 0.0f) {
+            game->darkness_alpha = 0.0f;
         }
     }
 }
