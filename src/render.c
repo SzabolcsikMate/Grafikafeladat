@@ -7,6 +7,13 @@
 #include <windows.h>
 #include <string.h>
 
+#define LAMP_MODEL_BASE_OFFSET 1.78f
+#define LAMP_HEAD_LIGHT_OFFSET 0.78f
+
+static void draw_ui_rect_px(float x1, float y1, float x2, float y2, float r, float g, float b, float a);
+static void draw_ui_outline_px(float x1, float y1, float x2, float y2, float r, float g, float b, float a);
+static void draw_end_screen(const GameState* game);
+
 static void set_perspective(float fov_deg, float aspect, float near_plane, float far_plane)
 {
     float top = near_plane * tanf(fov_deg * 0.5f * 3.14159265f / 180.0f);
@@ -83,7 +90,7 @@ static void draw_textured_box(Vec3 min, Vec3 max, GLuint texture_id, float tex_s
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
-    glColor3f(0.68f, 0.62f, 0.52f);
+    glColor3f(0.50f, 0.38f, 0.25f);
 
     glBegin(GL_QUADS);
 
@@ -128,6 +135,59 @@ static void draw_textured_box(Vec3 min, Vec3 max, GLuint texture_id, float tex_s
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
+
+static void draw_textured_box_tinted(Vec3 min, Vec3 max, GLuint texture_id, float tex_scale, float tr, float tg, float tb)
+{
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glColor3f(tr, tg, tb);
+
+    glBegin(GL_QUADS);
+
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(min.x, max.y, max.z);
+    glTexCoord2f(tex_scale, 0.0f); glVertex3f(max.x, max.y, max.z);
+    glTexCoord2f(tex_scale, tex_scale); glVertex3f(max.x, max.y, min.z);
+    glTexCoord2f(0.0f, tex_scale); glVertex3f(min.x, max.y, min.z);
+
+    glNormal3f(0.0f, -1.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(min.x, min.y, min.z);
+    glTexCoord2f(tex_scale, 0.0f); glVertex3f(max.x, min.y, min.z);
+    glTexCoord2f(tex_scale, tex_scale); glVertex3f(max.x, min.y, max.z);
+    glTexCoord2f(0.0f, tex_scale); glVertex3f(min.x, min.y, max.z);
+
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(min.x, min.y, max.z);
+    glTexCoord2f(tex_scale, 0.0f); glVertex3f(max.x, min.y, max.z);
+    glTexCoord2f(tex_scale, tex_scale); glVertex3f(max.x, max.y, max.z);
+    glTexCoord2f(0.0f, tex_scale); glVertex3f(min.x, max.y, max.z);
+
+    glNormal3f(0.0f, 0.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(max.x, min.y, min.z);
+    glTexCoord2f(tex_scale, 0.0f); glVertex3f(min.x, min.y, min.z);
+    glTexCoord2f(tex_scale, tex_scale); glVertex3f(min.x, max.y, min.z);
+    glTexCoord2f(0.0f, tex_scale); glVertex3f(max.x, max.y, min.z);
+
+    glNormal3f(-1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(min.x, min.y, min.z);
+    glTexCoord2f(tex_scale, 0.0f); glVertex3f(min.x, min.y, max.z);
+    glTexCoord2f(tex_scale, tex_scale); glVertex3f(min.x, max.y, max.z);
+    glTexCoord2f(0.0f, tex_scale); glVertex3f(min.x, max.y, min.z);
+
+    glNormal3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(max.x, min.y, max.z);
+    glTexCoord2f(tex_scale, 0.0f); glVertex3f(max.x, min.y, min.z);
+    glTexCoord2f(tex_scale, tex_scale); glVertex3f(max.x, max.y, min.z);
+    glTexCoord2f(0.0f, tex_scale); glVertex3f(max.x, max.y, max.z);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+
 
 static void draw_textured_floor(GLuint texture_id)
 {
@@ -183,24 +243,40 @@ static void draw_lamp_object(const LightPoint* light, float pulse, GLuint lamp_m
 
     glPushMatrix();
 
-    glTranslatef(light->position.x, light->position.y - 1.78f, light->position.z);
+    glTranslatef(light->position.x, light->position.y - LAMP_MODEL_BASE_OFFSET, light->position.z);
     glScalef(model_scale, model_scale, model_scale);
 
+    glDisable(GL_TEXTURE_2D);
+
     if (lamp_model != 0) {
+        GLfloat metal_ambient[]  = {0.075f, 0.070f, 0.060f, 1.0f};
+        GLfloat metal_diffuse[]  = {0.30f, 0.29f, 0.25f, 1.0f};
+        GLfloat metal_specular[] = {0.055f, 0.050f, 0.040f, 1.0f};
+        GLfloat metal_shiny[]    = {8.0f};
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, metal_ambient);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, metal_diffuse);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, metal_specular);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, metal_shiny);
+
+        glColor3f(0.30f, 0.29f, 0.25f);
+
         glCallList(lamp_model);
     } else {
         draw_box(
-            vec3(-0.10f, 0.0f, -0.10f),
-            vec3(0.10f, 2.2f, 0.10f),
-            0.20f, 0.20f, 0.20f
+            vec3(-0.08f, 0.0f, -0.08f),
+            vec3(0.08f, 1.75f, 0.08f),
+            0.24f, 0.22f, 0.18f
         );
 
         draw_box(
-            vec3(-0.35f, 2.0f, -0.35f),
-            vec3(0.35f, 2.45f, 0.35f),
-            0.95f, 0.75f, 0.25f
+            vec3(-0.28f, 1.65f, -0.28f),
+            vec3(0.28f, 2.05f, 0.28f),
+            0.60f, 0.46f, 0.26f
         );
     }
+
+    glEnable(GL_TEXTURE_2D);
 
     glPopMatrix();
 }
@@ -228,8 +304,8 @@ static void draw_light_pool(const LightPoint* light, float pulse)
         power = 0.80f;
     }
 
-    radius = 1.4f + power * 2.4f;
-    alpha = 0.05f + power * 0.16f;
+    radius = 1.0f + power * 2.0f;
+    alpha = 0.035f + power * 0.11f;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_FOG);
@@ -240,10 +316,10 @@ static void draw_light_pool(const LightPoint* light, float pulse)
 
     glBegin(GL_TRIANGLE_FAN);
 
-    glColor4f(1.0f, 0.48f, 0.08f, alpha);
+    glColor4f(1.0f, 0.58f, 0.16f, alpha);
     glVertex3f(light->position.x, 0.03f, light->position.z);
 
-    glColor4f(1.0f, 0.48f, 0.08f, 0.0f);
+    glColor4f(1.0f, 0.36f, 0.04f, 0.0f);
 
     for (i = 0; i <= 64; i++) {
         float a = (float)i / 64.0f * 2.0f * 3.14159265f;
@@ -279,7 +355,7 @@ static void draw_selected_lamp_outline(const GameState* game, GLuint lamp_model)
     }
 
     light = &game->light_points[game->selected_light_index];
-    model_scale = 0.0108f;
+    model_scale = 0.0103f;
 
     glPushAttrib(GL_ENABLE_BIT | GL_LINE_BIT | GL_POLYGON_BIT | GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
 
@@ -300,7 +376,13 @@ static void draw_selected_lamp_outline(const GameState* game, GLuint lamp_model)
     glTranslatef(light->position.x, light->position.y - 1.78f, light->position.z);
     glScalef(model_scale, model_scale, model_scale);
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(1.4f);
+
     glCallList(lamp_model);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glLineWidth(1.0f);
 
     glPopMatrix();
 
@@ -310,11 +392,13 @@ static void draw_selected_lamp_outline(const GameState* game, GLuint lamp_model)
     glPopAttrib();
 }
 
-static void draw_lamp_head_glow(const LightPoint* light, float pulse)
+static void draw_lamp_head_glow(const GameState* game, const LightPoint* light, float pulse)
 {
-    float radius;
-    float alpha;
     float power;
+    float inner_radius;
+    float outer_radius;
+    float alpha;
+    float head_y;
     int i;
 
     if (!light->active && !light->collected) {
@@ -323,16 +407,14 @@ static void draw_lamp_head_glow(const LightPoint* light, float pulse)
 
     power = light->current_intensity;
 
-    if (power < 0.0f) {
-        power = 0.0f;
-    }
+    if (power < 0.0f) power = 0.0f;
+    if (power > 0.80f) power = 0.80f;
 
-    if (power > 0.80f) {
-        power = 0.80f;
-    }
+    head_y = light->position.y + LAMP_HEAD_LIGHT_OFFSET;
 
-    radius = 0.16f + power * 0.10f + pulse * 0.012f;
-    alpha = 0.04f + power * 0.10f;
+    inner_radius = 0.08f + power * 0.045f;
+    outer_radius = 0.26f + power * 0.16f + pulse * 0.010f;
+    alpha = 0.12f + power * 0.22f;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_FOG);
@@ -341,28 +423,47 @@ static void draw_lamp_head_glow(const LightPoint* light, float pulse)
     glDisable(GL_CULL_FACE);
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glPushMatrix();
 
-    glTranslatef(light->position.x, light->position.y + 1.05f, light->position.z);
+    glTranslatef(light->position.x, head_y, light->position.z);
+
+    glRotatef(game->player.yaw, 0.0f, 1.0f, 0.0f);
+    glRotatef(game->player.pitch, 1.0f, 0.0f, 0.0f);
 
     glBegin(GL_TRIANGLE_FAN);
 
-    glColor4f(1.0f, 0.68f, 0.10f, alpha);
+    glColor4f(1.0f, 0.76f, 0.26f, alpha);
     glVertex3f(0.0f, 0.0f, 0.0f);
 
-    glColor4f(1.0f, 0.68f, 0.10f, 0.0f);
+    glColor4f(1.0f, 0.38f, 0.04f, 0.0f);
 
     for (i = 0; i <= 48; i++) {
         float a = (float)i / 48.0f * 2.0f * 3.14159265f;
-        glVertex3f(cosf(a) * radius, sinf(a) * radius, 0.0f);
+        glVertex3f(cosf(a) * outer_radius, sinf(a) * outer_radius, 0.0f);
+    }
+
+    glEnd();
+
+    glColor4f(1.0f, 0.86f, 0.42f, 0.90f);
+
+    glBegin(GL_TRIANGLE_FAN);
+
+    glVertex3f(0.0f, 0.0f, 0.0f);
+
+    glColor4f(1.0f, 0.52f, 0.10f, 0.0f);
+
+    for (i = 0; i <= 32; i++) {
+        float a = (float)i / 32.0f * 2.0f * 3.14159265f;
+        glVertex3f(cosf(a) * inner_radius, sinf(a) * inner_radius, 0.0f);
     }
 
     glEnd();
 
     glPopMatrix();
 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_BLEND);
 
     glEnable(GL_CULL_FACE);
@@ -438,23 +539,70 @@ static void draw_lamp_power_slider(const GameState* game)
     glEnable(GL_LIGHTING);
 }
 
-static void draw_timer_bar(const GameState* game)
+static void draw_digit_segment(float x, float y, float w, float h)
 {
-    float ratio;
+    glBegin(GL_QUADS);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+}
 
-    if (game->max_time <= 0.0f) {
-        ratio = 0.0f;
-    } else {
-        ratio = game->time_remaining / game->max_time;
+static void draw_digit(float x, float y, float s, int digit)
+{
+    int seg[10][7] = {
+        {1,1,1,1,1,1,0},
+        {0,1,1,0,0,0,0},
+        {1,1,0,1,1,0,1},
+        {1,1,1,1,0,0,1},
+        {0,1,1,0,0,1,1},
+        {1,0,1,1,0,1,1},
+        {1,0,1,1,1,1,1},
+        {1,1,1,0,0,0,0},
+        {1,1,1,1,1,1,1},
+        {1,1,1,1,0,1,1}
+    };
+
+    float t = s * 0.16f;
+    float w = s;
+    float h = s * 1.8f;
+
+    if (digit < 0 || digit > 9) {
+        return;
     }
 
-    if (ratio < 0.0f) {
-        ratio = 0.0f;
+    if (seg[digit][0]) draw_digit_segment(x + t, y + h - t, w - 2.0f * t, t);
+    if (seg[digit][1]) draw_digit_segment(x + w - t, y + h * 0.5f, t, h * 0.5f - t);
+    if (seg[digit][2]) draw_digit_segment(x + w - t, y + t, t, h * 0.5f - t);
+    if (seg[digit][3]) draw_digit_segment(x + t, y, w - 2.0f * t, t);
+    if (seg[digit][4]) draw_digit_segment(x, y + t, t, h * 0.5f - t);
+    if (seg[digit][5]) draw_digit_segment(x, y + h * 0.5f, t, h * 0.5f - t);
+    if (seg[digit][6]) draw_digit_segment(x + t, y + h * 0.5f - t * 0.5f, w - 2.0f * t, t);
+}
+
+static void draw_countdown(const GameState* game)
+{
+    int total_tenths;
+    int seconds;
+    int tenths;
+    int tens;
+    int ones;
+
+    total_tenths = (int)ceilf(game->time_remaining * 10.0f);
+
+    if (total_tenths < 0) {
+        total_tenths = 0;
     }
 
-    if (ratio > 1.0f) {
-        ratio = 1.0f;
+    if (total_tenths > 990) {
+        total_tenths = 990;
     }
+
+    seconds = total_tenths / 10;
+    tenths = total_tenths % 10;
+    tens = seconds / 10;
+    ones = seconds % 10;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_FOG);
@@ -474,21 +622,20 @@ static void draw_timer_bar(const GameState* game)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
-    glBegin(GL_QUADS);
-    glVertex2f(0.30f, 0.94f);
-    glVertex2f(0.70f, 0.94f);
-    glVertex2f(0.70f, 0.975f);
-    glVertex2f(0.30f, 0.975f);
-    glEnd();
+    glColor4f(0.0f, 0.0f, 0.0f, 0.65f);
+    draw_digit_segment(0.425f, 0.895f, 0.150f, 0.075f);
 
-    glColor4f(1.0f, 0.85f, 0.15f, 0.95f);
-    glBegin(GL_QUADS);
-    glVertex2f(0.305f, 0.945f);
-    glVertex2f(0.305f + 0.39f * ratio, 0.945f);
-    glVertex2f(0.305f + 0.39f * ratio, 0.970f);
-    glVertex2f(0.305f, 0.970f);
-    glEnd();
+    glColor4f(1.0f, 0.82f, 0.18f, 1.0f);
+
+    if (seconds >= 10) {
+        draw_digit(0.440f, 0.905f, 0.023f, tens);
+        draw_digit(0.480f, 0.905f, 0.023f, ones);
+    } else {
+        draw_digit(0.462f, 0.905f, 0.023f, ones);
+    }
+
+    draw_digit_segment(0.520f, 0.907f, 0.006f, 0.006f);
+    draw_digit(0.535f, 0.905f, 0.023f, tenths);
 
     glDisable(GL_BLEND);
 
@@ -529,69 +676,9 @@ static void draw_simple_game_over_text(void)
     draw_block_text_rect(0.36f, 0.455f, 0.28f, 0.010f);
 }
 
-static void draw_game_over_overlay(const GameState* game)
-{
-    float a;
-
-    if (!game->game_over) {
-        return;
-    }
-
-    a = game->game_over_fade;
-
-    if (a < 0.0f) {
-        a = 0.0f;
-    }
-
-    if (a > 1.0f) {
-        a = 1.0f;
-    }
-
-    glDisable(GL_LIGHTING);
-    glDisable(GL_FOG);
-    glDisable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glColor4f(0.0f, 0.0f, 0.0f, 0.88f * a);
-    glBegin(GL_QUADS);
-    glVertex2f(0.0f, 0.0f);
-    glVertex2f(1.0f, 0.0f);
-    glVertex2f(1.0f, 1.0f);
-    glVertex2f(0.0f, 1.0f);
-    glEnd();
-
-    draw_simple_game_over_text();
-
-    glDisable(GL_BLEND);
-
-    glPopMatrix();
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-
-    glMatrixMode(GL_MODELVIEW);
-
-    glDepthMask(GL_TRUE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_FOG);
-    glEnable(GL_LIGHTING);
-}
-
 void init_render_state(void)
 {
-    GLfloat ambient[] = {0.16f, 0.13f, 0.10f, 1.0f};
+    GLfloat ambient[] = {0.095f, 0.075f, 0.055f, 1.0f};
     GLfloat fog_color[] = {0.018f, 0.018f, 0.025f, 1.0f};
 
     glEnable(GL_DEPTH_TEST);
@@ -638,13 +725,10 @@ void render_scene(
     pulse = 0.5f + 0.5f * sinf((float)ticks * 0.006f);
 
     snprintf(
-        title,
-        sizeof(title),
-        "Dark Museum | Time: %.1f | Lamps: %d%s",
-        game->time_remaining,
-        game->win_counter,
-        game->game_over ? " | Darkness caught you" : ""
-    );
+    title,
+    sizeof(title),
+    "Dark Museum"
+);
 
     SDL_SetWindowTitle(window, title);
 
@@ -663,13 +747,20 @@ void render_scene(
 
         for (i = 0; i < game->light_point_count && light_index < 8; i++) {
             const LightPoint* light = &game->light_points[i];
+            float dx = light->position.x - game->player.position.x;
+            float dz = light->position.z - game->player.position.z;
+            float dist2 = dx * dx + dz * dz;
+
+            if (i != game->current_target && dist2 > 650.0f) {
+                continue;
+            }
 
             if (light->active || light->collected) {
                 float intensity;
 
                 GLfloat light_pos[] = {
                     light->position.x,
-                    light->position.y,
+                    light->position.y + LAMP_HEAD_LIGHT_OFFSET,
                     light->position.z,
                     1.0f
                 };
@@ -684,22 +775,22 @@ void render_scene(
                     intensity = 0.05f;
                 }
 
-                if (intensity > 0.80f) {
-                    intensity = 0.80f;
+                if (intensity > 1.35f) {
+                    intensity = 1.35f;
                 }
 
                 {
                     GLfloat light_diffuse[] = {
-                        intensity * 1.05f,
-                        intensity * 0.58f,
-                        intensity * 0.20f,
+                        intensity * 1.35f,
+                        intensity * 0.92f,
+                        intensity * 0.42f,
                         1.0f
                     };
 
                     GLfloat light_specular[] = {
-                        intensity * 0.06f,
-                        intensity * 0.045f,
-                        intensity * 0.02f,
+                        intensity * 0.015f,
+                        intensity * 0.012f,
+                        intensity * 0.008f,
                         1.0f
                     };
 
@@ -709,8 +800,8 @@ void render_scene(
                     glLightfv(GL_LIGHT0 + light_index, GL_SPECULAR, light_specular);
 
                     glLightf(GL_LIGHT0 + light_index, GL_CONSTANT_ATTENUATION, 0.55f);
-                    glLightf(GL_LIGHT0 + light_index, GL_LINEAR_ATTENUATION, 0.11f);
-                    glLightf(GL_LIGHT0 + light_index, GL_QUADRATIC_ATTENUATION, 0.030f);
+                    glLightf(GL_LIGHT0 + light_index, GL_LINEAR_ATTENUATION, 0.070f);
+                    glLightf(GL_LIGHT0 + light_index, GL_QUADRATIC_ATTENUATION, 0.012f);
                 }
 
                 light_index++;
@@ -718,44 +809,37 @@ void render_scene(
         }
     }
 
-    if (floor_texture != 0) {
-        draw_textured_floor(floor_texture);
-    } else {
-        draw_box(
-            vec3(-18.0f, -0.01f, -18.0f),
-            vec3(18.0f, 0.0f, 18.0f),
-            0.25f,
-            0.25f,
-            0.27f
-        );
-    }
-
-    if (ceiling_texture != 0) {
-        draw_textured_ceiling(ceiling_texture);
-    } else {
-        draw_box(
-            vec3(-18.0f, 3.0f, -18.0f),
-            vec3(18.0f, 3.01f, 18.0f),
-            0.18f,
-            0.18f,
-            0.20f
-        );
-    }
-
     for (i = 0; i < game->object_count; i++) {
         const MapObject* obj = &game->map_objects[i];
 
-        Vec3 min = vec3(
-            obj->position.x - obj->scale.x * 0.5f,
-            0.0f,
-            obj->position.z - obj->scale.z * 0.5f
-        );
+        Vec3 min;
+        Vec3 max;
 
-        Vec3 max = vec3(
-            obj->position.x + obj->scale.x * 0.5f,
-            obj->scale.y,
-            obj->position.z + obj->scale.z * 0.5f
-        );
+        if (obj->position.y > 0.01f) {
+            min = vec3(
+                obj->position.x - obj->scale.x * 0.5f,
+                obj->position.y - obj->scale.y * 0.5f,
+                obj->position.z - obj->scale.z * 0.5f
+            );
+
+            max = vec3(
+                obj->position.x + obj->scale.x * 0.5f,
+                obj->position.y + obj->scale.y * 0.5f,
+                obj->position.z + obj->scale.z * 0.5f
+            );
+        } else {
+            min = vec3(
+                obj->position.x - obj->scale.x * 0.5f,
+                0.0f,
+                obj->position.z - obj->scale.z * 0.5f
+            );
+
+            max = vec3(
+                obj->position.x + obj->scale.x * 0.5f,
+                obj->scale.y,
+                obj->position.z + obj->scale.z * 0.5f
+            );
+        }
 
         switch (obj->type) {
             case OBJ_BOUNDING_WALL:
@@ -776,16 +860,61 @@ void render_scene(
                 break;
 
             case OBJ_PLATFORM:
-                draw_box(min, max, 0.35f, 0.35f, 0.38f);
+                if (floor_texture != 0) {
+                    draw_textured_box(min, max, floor_texture, 2.0f);
+                } else {
+                    draw_box(min, max, 0.26f, 0.22f, 0.18f);
+                }
                 break;
 
             case OBJ_LOW_BLOCK:
-                draw_box(min, max, 0.30f, 0.30f, 0.34f);
+                glDisable(GL_LIGHTING);
+                glDisable(GL_CULL_FACE);
+
+                if (ceiling_texture != 0) {
+                    draw_textured_box_tinted(min, max, ceiling_texture, 2.0f, 0.30f, 0.23f, 0.16f);
+                } else {
+                    draw_box(min, max, 0.22f, 0.17f, 0.12f);
+                }
+
+                glEnable(GL_CULL_FACE);
+                glEnable(GL_LIGHTING);
                 break;
 
             default:
                 break;
         }
+    }
+
+    if (game->win_counter >= 10) {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_FOG);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_CULL_FACE);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+        glPushMatrix();
+        glTranslatef(game->exit_position.x, 2.1f, game->exit_position.z);
+
+        glBegin(GL_TRIANGLE_FAN);
+        glColor4f(1.0f, 0.82f, 0.35f, 0.90f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+
+        glColor4f(1.0f, 0.55f, 0.12f, 0.0f);
+        for (i = 0; i <= 48; i++) {
+            float a = (float)i / 48.0f * 2.0f * 3.14159265f;
+            glVertex3f(0.0f, sinf(a) * 1.45f, cosf(a) * 1.65f);
+        }
+        glEnd();
+
+        glPopMatrix();
+
+        glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_FOG);
+        glEnable(GL_LIGHTING);
     }
 
     for (i = 0; i < game->light_point_count; i++) {
@@ -797,13 +926,15 @@ void render_scene(
     }
 
     for (i = 0; i < game->light_point_count; i++) {
-        draw_lamp_head_glow(&game->light_points[i], pulse);
+        draw_lamp_head_glow(game, &game->light_points[i], pulse);
     }
 
-    draw_selected_lamp_outline(game, lamp_model);
-    draw_timer_bar(game);
+    draw_countdown(game);
     draw_lamp_power_slider(game);
-    draw_game_over_overlay(game);
+
+    if (game->game_over || game->escaped) {
+        draw_end_screen(game);
+    }
 }
 
 static GLuint font_big = 0;
@@ -898,11 +1029,11 @@ static void draw_centered_text_px(GLuint font_list, const char* text, float cx, 
 {
     float width;
 
-    if (text == NULL) {
+    if (text == NULL || font_list == 0) {
         return;
     }
 
-    width = (float)strlen(text) * approx_char_w;
+    width = (float)strlen(text) * approx_char_w * 0.80f;
     draw_text_px(font_list, text, cx - width * 0.5f, y, r, g, b);
 }
 
@@ -935,11 +1066,116 @@ static void draw_fancy_button_px(float x1, float y1, float x2, float y2, const c
         text,
         (x1 + x2) * 0.5f,
         y1 + (y2 - y1) * 0.63f,
-        16.0f,
+        20.0f,
         0.92f,
         0.78f,
         0.55f
     );
+}
+
+static void draw_end_screen(const GameState* game)
+{
+    int width = 1280;
+    int height = 720;
+
+    SDL_Window* window = SDL_GL_GetCurrentWindow();
+
+    if (window != NULL) {
+        SDL_GetWindowSize(window, &width, &height);
+    }
+
+    init_menu_fonts();
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_FOG);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, (double)width, (double)height, 0.0, -1.0, 1.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    draw_ui_rect_px(
+        0.0f,
+        0.0f,
+        (float)width,
+        (float)height,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.78f
+    );
+
+    if (game->escaped) {
+        draw_centered_text_px(
+            font_big,
+            "YOU ESCAPED",
+            (float)width * 0.5f,
+            (float)height * 0.25f,
+            44.0f,
+            0.95f,
+            0.78f,
+            0.25f
+        );
+    } else {
+        draw_centered_text_px(
+    font_mid,
+    "THE DARKNESS CAUGHT YOU",
+    (float)width * 0.5f,
+    (float)height * 0.25f,
+    23.0f,
+    0.85f,
+    0.08f,
+    0.06f
+);
+    }
+
+    draw_fancy_button_px(
+        (float)width * 0.34f,
+        (float)height * 0.45f,
+        (float)width * 0.66f,
+        (float)height * 0.54f,
+        "RESTART"
+    );
+
+    draw_fancy_button_px(
+        (float)width * 0.34f,
+        (float)height * 0.58f,
+        (float)width * 0.66f,
+        (float)height * 0.67f,
+        "RETURN TO MENU"
+    );
+
+    draw_fancy_button_px(
+        (float)width * 0.34f,
+        (float)height * 0.71f,
+        (float)width * 0.66f,
+        (float)height * 0.80f,
+        "EXIT GAME"
+    );
+
+    glDisable(GL_BLEND);
+
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_FOG);
+    glEnable(GL_LIGHTING);
 }
 
 void render_menu(SDL_Window* window, int fullscreen, int inverted_mouse)
@@ -984,7 +1220,7 @@ void render_menu(SDL_Window* window, int fullscreen, int inverted_mouse)
     draw_centered_text_px(
         font_big,
         "DARK MUSEUM",
-        cx,
+        cx - 50.0f,
         (float)height * 0.18f,
         42.0f,
         0.92f,

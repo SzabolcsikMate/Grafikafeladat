@@ -67,6 +67,12 @@ typedef struct GameState {
 
     int inverted_mouse;
 
+    int escaped;
+    int end_screen;
+
+    Vec3 exit_position;
+    float exit_radius;
+
 } GameState;
 
 void init_game(GameState* game);

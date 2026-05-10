@@ -12,13 +12,14 @@ static const float JUMP_FORCE = 6.8f;
 static const float PLAYER_HEIGHT = 1.0f;
 static const float INTERACT_LOOK_DOT = 0.55f;
 static const float LAMP_MIN_POWER = 0.08f;
-static const float LAMP_MAX_POWER = 0.80f;
+static const float LAMP_MAX_POWER = 1.20f;
 
 static void set_active_light(GameState* game, int index);
 static int can_move_to(GameState* game, Vec3 new_pos);
 static float distance_xz(Vec3 a, Vec3 b);
 static int is_looking_at_light(const GameState* game, const LightPoint* light);
 static Vec3 get_forward_3d(const GameState* game);
+static void add_corner_fill(GameState* game, float x, float z);
 
 static void add_collider(GameState* game, Vec3 min, Vec3 max)
 {
@@ -75,98 +76,374 @@ static void add_light(GameState* game, Vec3 pos, float reach, float safe_radius)
     game->light_point_count++;
 }
 
-static void build_central_hall(GameState* game, Vec3 offset)
+static void add_floor_object(GameState* game, Vec3 center, Vec3 scale)
 {
-    float wall_h = 3.2f;
-    float wall_t = 0.7f;
-
-    add_floor_collider(game, offset, vec3(14.0f, 0.1f, 16.0f));
-
-    add_map_object(game, OBJ_WALL_PANEL, vec3_add(offset, vec3(-7.0f, 0.0f, 0.0f)), vec3(wall_t, wall_h, 16.0f));
-    add_map_object(game, OBJ_WALL_PANEL, vec3_add(offset, vec3(7.0f, 0.0f, 0.0f)), vec3(wall_t, wall_h, 16.0f));
-    add_map_object(game, OBJ_WALL_PANEL, vec3_add(offset, vec3(0.0f, 0.0f, 8.0f)), vec3(14.0f, wall_h, wall_t));
-
-    add_map_object(game, OBJ_COLUMN, vec3_add(offset, vec3(-4.0f, 0.0f, 4.0f)), vec3(0.8f, wall_h, 0.8f));
-    add_map_object(game, OBJ_COLUMN, vec3_add(offset, vec3(4.0f, 0.0f, 4.0f)), vec3(0.8f, wall_h, 0.8f));
-    add_map_object(game, OBJ_COLUMN, vec3_add(offset, vec3(-4.0f, 0.0f, -4.0f)), vec3(0.8f, wall_h, 0.8f));
-    add_map_object(game, OBJ_COLUMN, vec3_add(offset, vec3(4.0f, 0.0f, -4.0f)), vec3(0.8f, wall_h, 0.8f));
+    add_floor_collider(game, center, scale);
 }
 
-static void build_parkour_corridor(GameState* game, Vec3 offset)
+static void build_room(GameState* game, Vec3 center, float sx, float sz, int open_north, int open_south, int open_east, int open_west)
 {
-    float wall_h = 3.2f;
+    float wall_h = 4.6f;
     float wall_t = 0.7f;
+    float half_x = sx * 0.5f;
+    float half_z = sz * 0.5f;
+    float door_w = 3.2f;
 
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3_add(offset, vec3(-3.5f, 0.0f, 0.0f)), vec3(wall_t, wall_h, 22.0f));
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3_add(offset, vec3(3.5f, 0.0f, 0.0f)), vec3(wall_t, wall_h, 22.0f));
+    add_floor_object(game, center, vec3(sx, 0.1f, sz));
 
-    add_map_object(game, OBJ_PLATFORM, vec3_add(offset, vec3(0.0f, 0.0f, 8.0f)), vec3(5.2f, 0.35f, 3.2f));
-    add_map_object(game, OBJ_PLATFORM, vec3_add(offset, vec3(-1.6f, 0.0f, 2.0f)), vec3(2.2f, 0.70f, 2.2f));
-    add_map_object(game, OBJ_PLATFORM, vec3_add(offset, vec3(1.6f, 0.0f, -4.0f)), vec3(2.2f, 1.05f, 2.2f));
-    add_map_object(game, OBJ_PLATFORM, vec3_add(offset, vec3(0.0f, 0.0f, -10.0f)), vec3(2.6f, 1.35f, 2.6f));
-    add_map_object(game, OBJ_PLATFORM, vec3_add(offset, vec3(0.0f, 0.0f, -15.0f)), vec3(3.0f, 0.45f, 3.0f));
+    if (!open_north) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x, 0.0f, center.z - half_z), vec3(sx, wall_h, wall_t));
+    } else {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - (half_x + door_w * 0.5f) * 0.5f, 0.0f, center.z - half_z), vec3(half_x - door_w * 0.5f, wall_h, wall_t));
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + (half_x + door_w * 0.5f) * 0.5f, 0.0f, center.z - half_z), vec3(half_x - door_w * 0.5f, wall_h, wall_t));
+    }
+
+    if (!open_south) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x, 0.0f, center.z + half_z), vec3(sx, wall_h, wall_t));
+    } else {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - (half_x + door_w * 0.5f) * 0.5f, 0.0f, center.z + half_z), vec3(half_x - door_w * 0.5f, wall_h, wall_t));
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + (half_x + door_w * 0.5f) * 0.5f, 0.0f, center.z + half_z), vec3(half_x - door_w * 0.5f, wall_h, wall_t));
+    }
+
+    if (!open_west) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - half_x, 0.0f, center.z), vec3(wall_t, wall_h, sz));
+    } else {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - half_x, 0.0f, center.z - (half_z + door_w * 0.5f) * 0.5f), vec3(wall_t, wall_h, half_z - door_w * 0.5f));
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - half_x, 0.0f, center.z + (half_z + door_w * 0.5f) * 0.5f), vec3(wall_t, wall_h, half_z - door_w * 0.5f));
+    }
+
+    if (!open_east) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + half_x, 0.0f, center.z), vec3(wall_t, wall_h, sz));
+    } else {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + half_x, 0.0f, center.z - (half_z + door_w * 0.5f) * 0.5f), vec3(wall_t, wall_h, half_z - door_w * 0.5f));
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + half_x, 0.0f, center.z + (half_z + door_w * 0.5f) * 0.5f), vec3(wall_t, wall_h, half_z - door_w * 0.5f));
+    }
 }
 
-static void build_side_wing(GameState* game, Vec3 offset, int is_left)
+static void build_corridor(GameState* game, Vec3 center, float sx, float sz, int east_west)
 {
-    float wall_h = 3.2f;
+    float wall_h = 4.6f;
     float wall_t = 0.7f;
-    float side = is_left ? -1.0f : 1.0f;
 
-    add_floor_collider(game, vec3_add(offset, vec3(side * 7.5f, 0.0f, 0.0f)), vec3(8.0f, 0.1f, 8.0f));
+    add_floor_object(game, center, vec3(sx, 0.1f, sz));
 
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3_add(offset, vec3(side * 7.5f, 0.0f, 4.0f)), vec3(8.0f, wall_h, wall_t));
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3_add(offset, vec3(side * 7.5f, 0.0f, -4.0f)), vec3(8.0f, wall_h, wall_t));
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3_add(offset, vec3(side * 11.5f, 0.0f, 0.0f)), vec3(wall_t, wall_h, 8.0f));
+    if (east_west) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x, 0.0f, center.z - sz * 0.5f), vec3(sx, wall_h, wall_t));
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x, 0.0f, center.z + sz * 0.5f), vec3(sx, wall_h, wall_t));
+    } else {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - sx * 0.5f, 0.0f, center.z), vec3(wall_t, wall_h, sz));
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + sx * 0.5f, 0.0f, center.z), vec3(wall_t, wall_h, sz));
+    }
+}
 
-    add_map_object(game, OBJ_COLUMN, vec3_add(offset, vec3(side * 5.0f, 0.0f, 0.0f)), vec3(0.8f, wall_h, 0.8f));
-    add_map_object(game, OBJ_COLUMN, vec3_add(offset, vec3(side * 10.0f, 0.0f, 0.0f)), vec3(0.8f, wall_h, 0.8f));
+static void build_parkour(GameState* game, Vec3 center)
+{
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x - 3.6f, 0.0f, center.z), vec3(wall_t, wall_h, 28.0f));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(center.x + 3.6f, 0.0f, center.z), vec3(wall_t, wall_h, 28.0f));
+
+    /* parkour bejárat, erre még biztonságosan rá tudsz lépni */
+    add_map_object(game, OBJ_PLATFORM, vec3(center.x, 0.0f, center.z + 13.0f), vec3(5.8f, 0.35f, 4.0f));
+
+    /* jelölő kapu */
+    add_map_object(game, OBJ_LOW_BLOCK, vec3(center.x, 0.0f, center.z + 15.2f), vec3(5.8f, 0.20f, 0.35f));
+    add_map_object(game, OBJ_LOW_BLOCK, vec3(center.x - 2.8f, 0.0f, center.z + 13.0f), vec3(0.35f, 0.20f, 4.0f));
+    add_map_object(game, OBJ_LOW_BLOCK, vec3(center.x + 2.8f, 0.0f, center.z + 13.0f), vec3(0.35f, 0.20f, 4.0f));
+
+    /* csak két ugrás */
+    add_map_object(game, OBJ_PLATFORM, vec3(center.x - 1.4f, 0.0f, center.z + 6.5f), vec3(3.2f, 0.75f, 3.2f));
+    add_map_object(game, OBJ_PLATFORM, vec3(center.x + 1.4f, 0.0f, center.z), vec3(3.2f, 1.05f, 3.2f));
+
+    /* kijáró platform */
+    add_map_object(game, OBJ_PLATFORM, vec3(center.x, 0.0f, center.z - 7.0f), vec3(5.4f, 0.45f, 4.0f));
+}
+
+static void add_floor_piece(GameState* game, Vec3 pos, Vec3 scale)
+{
+    if (game->object_count >= MAX_MAP_OBJECTS) {
+        return;
+    }
+
+    game->map_objects[game->object_count].type = OBJ_PLATFORM;
+    game->map_objects[game->object_count].position = pos;
+    game->map_objects[game->object_count].scale = scale;
+    game->object_count++;
+
+    add_floor_collider(game, pos, vec3(scale.x, 0.1f, scale.z));
+}
+
+static void add_ceiling_piece(GameState* game, Vec3 pos, Vec3 scale)
+{
+    if (game->object_count >= MAX_MAP_OBJECTS) {
+        return;
+    }
+
+    game->map_objects[game->object_count].type = OBJ_LOW_BLOCK;
+    game->map_objects[game->object_count].position = pos;
+    game->map_objects[game->object_count].scale = scale;
+    game->object_count++;
+}
+
+static void add_corridor_z(GameState* game, float x, float z, float length)
+{
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+
+    add_floor_piece(game, vec3(x, 0.0f, z), vec3(7.0f, 0.08f, length));
+    add_ceiling_piece(game, vec3(x, 4.6f, z), vec3(7.0f, 0.08f, length));
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x - 3.5f, 0.0f, z), vec3(wall_t, wall_h, length));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x + 3.5f, 0.0f, z), vec3(wall_t, wall_h, length));
+}
+
+static void add_corridor_x(GameState* game, float x, float z, float length)
+{
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+
+    add_floor_piece(game, vec3(x, 0.0f, z), vec3(length, 0.08f, 7.0f));
+    add_ceiling_piece(game, vec3(x, 4.6f, z), vec3(length, 0.08f, 7.0f));
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x, 0.0f, z - 3.5f), vec3(length, wall_h, wall_t));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x, 0.0f, z + 3.5f), vec3(length, wall_h, wall_t));
+}
+
+static void add_corner_fill(GameState* game, float x, float z)
+{
+    add_floor_piece(game, vec3(x, 0.0f, z), vec3(7.0f, 0.08f, 7.0f));
+    add_ceiling_piece(game, vec3(x, 4.6f, z), vec3(7.0f, 0.08f, 7.0f));
+}
+
+static void add_corner_wall_block(GameState* game, float x, float z)
+{
+    add_map_object(
+        game,
+        OBJ_BOUNDING_WALL,
+        vec3(x, 0.0f, z),
+        vec3(7.0f, 3.2f, 0.7f)
+    );
+}
+
+static void add_turn_room(GameState* game, float x, float z)
+{
+    add_floor_piece(game, vec3(x, 0.0f, z), vec3(9.0f, 0.08f, 9.0f));
+    add_ceiling_piece(game, vec3(x, 4.6f, z), vec3(9.0f, 0.08f, 9.0f));
+}
+
+
+static void add_room_wall_z(GameState* game, float x, float z, float sx, int open_center)
+{
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+    float door_w = 7.0f;
+
+    if (!open_center) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(x, 0.0f, z), vec3(sx, wall_h, wall_t));
+        return;
+    }
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x - (sx + door_w) * 0.25f, 0.0f, z), vec3((sx - door_w) * 0.5f, wall_h, wall_t));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x + (sx + door_w) * 0.25f, 0.0f, z), vec3((sx - door_w) * 0.5f, wall_h, wall_t));
+}
+
+static void add_room_wall_x(GameState* game, float x, float z, float sz, int open_center)
+{
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+    float door_w = 7.0f;
+
+    if (!open_center) {
+        add_map_object(game, OBJ_BOUNDING_WALL, vec3(x, 0.0f, z), vec3(wall_t, wall_h, sz));
+        return;
+    }
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x, 0.0f, z - (sz + door_w) * 0.25f), vec3(wall_t, wall_h, (sz - door_w) * 0.5f));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x, 0.0f, z + (sz + door_w) * 0.25f), vec3(wall_t, wall_h, (sz - door_w) * 0.5f));
+}
+
+static void add_node_room(GameState* game, float x, float z, int open_north, int open_south, int open_east, int open_west)
+{
+    float size = 11.0f;
+    float half = size * 0.5f;
+
+    add_floor_piece(game, vec3(x, 0.0f, z), vec3(size, 0.08f, size));
+    add_ceiling_piece(game, vec3(x, 4.6f, z), vec3(size, 0.08f, size));
+
+    add_room_wall_z(game, x, z - half, size, open_north);
+    add_room_wall_z(game, x, z + half, size, open_south);
+    add_room_wall_x(game, x + half, z, size, open_east);
+    add_room_wall_x(game, x - half, z, size, open_west);
+}
+
+static void add_corridor_between_z(GameState* game, float x, float z1, float z2)
+{
+    float room = 11.0f;
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+    float min_z;
+    float max_z;
+    float len;
+    float center_z;
+
+    if (z1 < z2) {
+        min_z = z1 + room * 0.5f;
+        max_z = z2 - room * 0.5f;
+    } else {
+        min_z = z2 + room * 0.5f;
+        max_z = z1 - room * 0.5f;
+    }
+
+    len = max_z - min_z;
+    if (len <= 0.1f) {
+        return;
+    }
+
+    center_z = (min_z + max_z) * 0.5f;
+
+    add_floor_piece(game, vec3(x, 0.0f, center_z), vec3(7.0f, 0.08f, len));
+    add_ceiling_piece(game, vec3(x, 4.6f, center_z), vec3(7.0f, 0.08f, len));
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x - 3.5f, 0.0f, center_z), vec3(wall_t, wall_h, len));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x + 3.5f, 0.0f, center_z), vec3(wall_t, wall_h, len));
+}
+
+static void add_corridor_between_x(GameState* game, float x1, float x2, float z)
+{
+    float room = 11.0f;
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+    float min_x;
+    float max_x;
+    float len;
+    float center_x;
+
+    if (x1 < x2) {
+        min_x = x1 + room * 0.5f;
+        max_x = x2 - room * 0.5f;
+    } else {
+        min_x = x2 + room * 0.5f;
+        max_x = x1 - room * 0.5f;
+    }
+
+    len = max_x - min_x;
+    if (len <= 0.1f) {
+        return;
+    }
+
+    center_x = (min_x + max_x) * 0.5f;
+
+    add_floor_piece(game, vec3(center_x, 0.0f, z), vec3(len, 0.08f, 7.0f));
+    add_ceiling_piece(game, vec3(center_x, 4.6f, z), vec3(len, 0.08f, 7.0f));
+
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(center_x, 0.0f, z - 3.5f), vec3(len, wall_h, wall_t));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(center_x, 0.0f, z + 3.5f), vec3(len, wall_h, wall_t));
+}
+
+static void add_parkour_between_z(GameState* game, float x, float z1, float z2)
+{
+    float room = 11.0f;
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+    float min_z;
+    float max_z;
+    float center_z;
+
+    if (z1 < z2) {
+        min_z = z1 + room * 0.5f;
+        max_z = z2 - room * 0.5f;
+    } else {
+        min_z = z2 + room * 0.5f;
+        max_z = z1 - room * 0.5f;
+    }
+
+    center_z = (min_z + max_z) * 0.5f;
+
+    add_ceiling_piece(game, vec3(x, 4.6f, center_z), vec3(7.0f, 0.08f, max_z - min_z));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x - 3.5f, 0.0f, center_z), vec3(wall_t, wall_h, max_z - min_z));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(x + 3.5f, 0.0f, center_z), vec3(wall_t, wall_h, max_z - min_z));
+
+    add_map_object(game, OBJ_PLATFORM, vec3(x, 0.0f, max_z - 2.0f), vec3(5.4f, 0.35f, 3.0f));
+    add_map_object(game, OBJ_PLATFORM, vec3(x - 1.3f, 0.0f, center_z + 2.5f), vec3(3.1f, 0.70f, 3.1f));
+    add_map_object(game, OBJ_PLATFORM, vec3(x + 1.3f, 0.0f, center_z - 2.5f), vec3(3.1f, 1.00f, 3.1f));
+    add_map_object(game, OBJ_PLATFORM, vec3(x, 0.0f, min_z + 2.0f), vec3(5.4f, 0.45f, 3.0f));
+}
+
+static void add_parkour_between_x(GameState* game, float x1, float x2, float z)
+{
+    float room = 11.0f;
+    float wall_h = 4.6f;
+    float wall_t = 0.7f;
+    float min_x;
+    float max_x;
+    float center_x;
+
+    if (x1 < x2) {
+        min_x = x1 + room * 0.5f;
+        max_x = x2 - room * 0.5f;
+    } else {
+        min_x = x2 + room * 0.5f;
+        max_x = x1 - room * 0.5f;
+    }
+
+    center_x = (min_x + max_x) * 0.5f;
+
+    add_ceiling_piece(game, vec3(center_x, 4.6f, z), vec3(max_x - min_x, 0.08f, 7.0f));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(center_x, 0.0f, z - 3.5f), vec3(max_x - min_x, wall_h, wall_t));
+    add_map_object(game, OBJ_BOUNDING_WALL, vec3(center_x, 0.0f, z + 3.5f), vec3(max_x - min_x, wall_h, wall_t));
+
+    add_map_object(game, OBJ_PLATFORM, vec3(min_x + 2.0f, 0.0f, z), vec3(3.0f, 0.35f, 5.4f));
+    add_map_object(game, OBJ_PLATFORM, vec3(center_x - 2.5f, 0.0f, z - 1.3f), vec3(3.1f, 0.70f, 3.1f));
+    add_map_object(game, OBJ_PLATFORM, vec3(center_x + 2.5f, 0.0f, z + 1.3f), vec3(3.1f, 1.00f, 3.1f));
+    add_map_object(game, OBJ_PLATFORM, vec3(max_x - 2.0f, 0.0f, z), vec3(3.0f, 0.45f, 5.4f));
 }
 
 static void build_level(GameState* game)
 {
-    Vec3 offset;
-
     game->collider_count = 0;
     game->object_count = 0;
     game->light_point_count = 0;
 
-    offset = vec3(0.0f, 0.0f, 10.0f);
-    build_central_hall(game, offset);
+    add_node_room(game, 0.0f, 18.0f, 1, 0, 0, 0);
+    add_node_room(game, 0.0f, 0.0f, 0, 1, 0, 1);
+    add_node_room(game, -18.0f, 0.0f, 1, 0, 1, 0);
+    add_node_room(game, -18.0f, -22.0f, 0, 1, 0, 1);
+    add_node_room(game, -38.0f, -22.0f, 1, 0, 1, 0);
+    add_node_room(game, -38.0f, -48.0f, 0, 1, 1, 0);
+    add_node_room(game, -14.0f, -48.0f, 1, 0, 0, 1);
+    add_node_room(game, -14.0f, -74.0f, 0, 1, 1, 0);
+    add_node_room(game, 10.0f, -74.0f, 1, 0, 0, 1);
+    add_node_room(game, 10.0f, -104.0f, 0, 1, 1, 0);
+    add_node_room(game, 34.0f, -104.0f, 0, 0, 1, 1);
 
-    add_light(game, vec3(0.0f, 1.8f, 17.0f), 3.0f, 4.2f);
-    add_light(game, vec3(0.0f, 1.8f, 4.0f), 3.0f, 4.2f);
+    add_corridor_between_z(game, 0.0f, 18.0f, 0.0f);
+    add_corridor_between_x(game, 0.0f, -18.0f, 0.0f);
+    add_corridor_between_z(game, -18.0f, 0.0f, -22.0f);
+    add_parkour_between_x(game, -18.0f, -38.0f, -22.0f);
+    add_parkour_between_z(game, -38.0f, -22.0f, -48.0f);
+    add_corridor_between_x(game, -38.0f, -14.0f, -48.0f);
+    add_parkour_between_z(game, -14.0f, -48.0f, -74.0f);
+    add_corridor_between_x(game, -14.0f, 10.0f, -74.0f);
+    add_corridor_between_z(game, 10.0f, -74.0f, -104.0f);
+    add_corridor_between_x(game, 10.0f, 34.0f, -104.0f);
 
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3(-4.7f, 0.0f, 1.0f), vec3(4.6f, 3.2f, 0.7f));
-    add_map_object(game, OBJ_BOUNDING_WALL, vec3(4.7f, 0.0f, 1.0f), vec3(4.6f, 3.2f, 0.7f));
+    add_light(game, vec3(0.0f, 1.8f, 18.0f), 4.4f, 5.8f);
+    add_light(game, vec3(0.0f, 1.8f, 0.0f), 4.4f, 5.8f);
+    add_light(game, vec3(-18.0f, 1.8f, 0.0f), 4.4f, 5.8f);
+    add_light(game, vec3(-18.0f, 1.8f, -22.0f), 4.4f, 5.8f);
+    add_light(game, vec3(-38.0f, 1.8f, -22.0f), 4.4f, 5.8f);
+    add_light(game, vec3(-38.0f, 1.8f, -48.0f), 4.4f, 5.8f);
+    add_light(game, vec3(-14.0f, 1.8f, -48.0f), 4.4f, 5.8f);
+    add_light(game, vec3(-14.0f, 1.8f, -74.0f), 4.4f, 5.8f);
+    add_light(game, vec3(10.0f, 1.8f, -74.0f), 4.4f, 5.8f);
+    add_light(game, vec3(10.0f, 1.8f, -104.0f), 4.4f, 5.8f);
 
-    offset = vec3(0.0f, 0.0f, -20.0f);
-    build_parkour_corridor(game, offset);
+    game->exit_position = vec3(39.8f, 1.0f, -104.0f);
+    game->exit_radius = 3.4f;
 
-    add_light(game, vec3(0.0f, 1.8f, -12.0f), 3.0f, 4.2f);
-    add_light(game, vec3(1.6f, 2.8f, -24.0f), 3.0f, 4.2f);
-    add_light(game, vec3(0.0f, 1.8f, -35.0f), 3.0f, 4.2f);
-
-    offset = vec3(3.5f, 0.0f, -39.0f);
-    build_side_wing(game, offset, 0);
-    add_light(game, vec3(11.0f, 1.8f, -39.0f), 3.0f, 4.2f);
-
-    offset = vec3(18.5f, 0.0f, -39.0f);
-    build_central_hall(game, offset);
-    add_light(game, vec3(18.5f, 1.8f, -43.0f), 3.0f, 4.2f);
-
-    offset = vec3(18.5f, 0.0f, -61.0f);
-    build_parkour_corridor(game, offset);
-
-    add_light(game, vec3(18.5f, 1.8f, -53.0f), 3.0f, 4.2f);
-    add_light(game, vec3(20.1f, 2.8f, -65.0f), 3.0f, 4.2f);
-    add_light(game, vec3(18.5f, 3.0f, -71.0f), 3.0f, 4.2f);
-
-    offset = vec3(18.5f, 0.0f, -89.0f);
-    build_central_hall(game, offset);
-
-    add_light(game, vec3(18.5f, 1.8f, -85.0f), 3.0f, 4.2f);
-    add_light(game, vec3(18.5f, 1.8f, -93.0f), 3.0f, 4.2f);
+    add_floor_piece(game, vec3(42.0f, 0.0f, -104.0f), vec3(5.0f, 0.08f, 7.0f));
+    add_ceiling_piece(game, vec3(42.0f, 4.6f, -104.0f), vec3(5.0f, 0.08f, 7.0f));
 
     set_active_light(game, 0);
 }
@@ -184,7 +461,7 @@ void reset_game(GameState* game)
     game->selected_light_ratio = 0.0f;
 
     game->player.position = vec3(0.0f, PLAYER_HEIGHT, 17.0f);
-    game->player.yaw = 180.0f;
+    game->player.yaw = 0.0f;
     game->player.pitch = 0.0f;
     game->player.radius = 0.35f;
     game->player.move_speed = 3.8f;
@@ -196,6 +473,11 @@ void reset_game(GameState* game)
     game->game_over_fade = 0.0f;
     game->game_over = 0;
     game->win_counter = 0;
+    game->escaped = 0;
+    game->end_screen = 0;
+
+    game->exit_position = vec3(39.8f, 1.0f, -104.0f);
+    game->exit_radius = 3.4f;
 
     build_level(game);
 
@@ -444,8 +726,17 @@ static void refresh_time_in_lit_lamp(GameState* game)
 
 void update_game(GameState* game, float dt, const unsigned char* key_state, int mouse_dx, int mouse_dy, int* quit_requested)
 {
+
+    if (game->escaped) {
+        return;
+    }
+
     if (key_state[SDL_SCANCODE_ESCAPE]) {
         *quit_requested = 1;
+        return;
+    }
+
+    if (game->escaped) {
         return;
     }
 
@@ -476,12 +767,20 @@ void update_game(GameState* game, float dt, const unsigned char* key_state, int 
         }
     }
 
+    if (game->win_counter >= 10 &&
+       distance_xz(game->player.position, game->exit_position) <= game->exit_radius) {
+        game->escaped = 1;
+        game->end_screen = 1;
+        return;
+       }
+
     if (!is_inside_any_safe_light(game)) {
         game->time_remaining -= dt;
 
         if (game->time_remaining <= 0.0f) {
             game->time_remaining = 0.0f;
             game->game_over = 1;
+            game->end_screen = 1;
         }
     }
 }

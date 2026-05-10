@@ -6,6 +6,46 @@
 #include "texture.h"
 #include "model.h"
 
+static int is_inside_button(float x, float y, float x1, float y1, float x2, float y2)
+{
+    return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+}
+
+static void enter_game(App* app)
+{
+    app->in_menu = 0;
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    SDL_ShowCursor(SDL_DISABLE);
+    SDL_GetRelativeMouseState(NULL, NULL);
+
+    app->game.inverted_mouse = app->inverted_mouse;
+}
+
+static void enter_menu(App* app)
+{
+    app->in_menu = 1;
+
+    reset_game(&app->game);
+    app->game.inverted_mouse = app->inverted_mouse;
+
+    SDL_SetRelativeMouseMode(SDL_FALSE);
+    SDL_ShowCursor(SDL_ENABLE);
+    SDL_GetRelativeMouseState(NULL, NULL);
+}
+
+static void restart_game(App* app)
+{
+    reset_game(&app->game);
+    app->game.inverted_mouse = app->inverted_mouse;
+
+    app->in_menu = 0;
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    SDL_ShowCursor(SDL_DISABLE);
+    SDL_GetRelativeMouseState(NULL, NULL);
+}
+
 int init_app(App* app)
 {
     app->window = NULL;
@@ -111,6 +151,7 @@ void run_app(App* app)
             if (event.type == SDL_QUIT) {
                 app->running = 0;
             }
+
             else if (event.type == SDL_WINDOWEVENT) {
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     app->width = event.window.data1;
@@ -118,57 +159,81 @@ void run_app(App* app)
                     resize_viewport(app->width, app->height);
                 }
             }
+
             else if (event.type == SDL_MOUSEMOTION) {
+                if (!app->in_menu && !app->game.game_over && !app->game.escaped) {
+                    mouse_dx += event.motion.xrel;
+                    mouse_dy += event.motion.yrel;
+
+                    if (mouse_dx > 80) mouse_dx = 80;
+                    if (mouse_dx < -80) mouse_dx = -80;
+                    if (mouse_dy > 80) mouse_dy = 80;
+                    if (mouse_dy < -80) mouse_dy = -80;
+                }
             }
 
             else if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     if (app->in_menu) {
                         app->running = 0;
+                    } else if (app->game.game_over || app->game.escaped) {
+                        SDL_SetRelativeMouseMode(SDL_FALSE);
+                        SDL_ShowCursor(SDL_ENABLE);
                     } else {
                         app->in_menu = 1;
+                        SDL_SetRelativeMouseMode(SDL_FALSE);
                         SDL_ShowCursor(SDL_ENABLE);
-                        mouse_dx = 0;
-                        mouse_dy = 0;
+                        SDL_GetRelativeMouseState(NULL, NULL);
                     }
                 }
 
-                if (!app->in_menu && event.key.keysym.sym == SDLK_F1) {
+                if (!app->in_menu &&
+                    !app->game.game_over &&
+                    !app->game.escaped &&
+                    event.key.keysym.sym == SDLK_F1) {
                     toggle_help();
                 }
             }
+
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                if (app->in_menu && event.button.button == SDL_BUTTON_LEFT) {
+                if (event.button.button == SDL_BUTTON_LEFT) {
                     int mx = event.button.x;
                     int my = event.button.y;
 
                     float x = (float)mx / (float)app->width;
                     float y = 1.0f - (float)my / (float)app->height;
 
-                    if (x >= 0.34f && x <= 0.66f && y >= 0.56f && y <= 0.65f) {
-                        app->in_menu = 0;
-                        SDL_ShowCursor(SDL_DISABLE);
-                        SDL_WarpMouseInWindow(app->window, app->width / 2, app->height / 2);
-                        mouse_dx = 0;
-                        mouse_dy = 0;
+                    if (!app->in_menu && (app->game.game_over || app->game.escaped)) {
+                        if (is_inside_button(x, y, 0.34f, 0.46f, 0.66f, 0.55f)) {
+                            restart_game(app);
+                        }
+                        else if (is_inside_button(x, y, 0.34f, 0.33f, 0.66f, 0.42f)) {
+                            enter_menu(app);
+                        }
+                        else if (is_inside_button(x, y, 0.34f, 0.20f, 0.66f, 0.29f)) {
+                            app->running = 0;
+                        }
                     }
 
-                    if (x >= 0.34f && x <= 0.66f && y >= 0.44f && y <= 0.53f) {
-                        app->fullscreen = !app->fullscreen;
+                    else if (app->in_menu) {
+                        if (is_inside_button(x, y, 0.34f, 0.56f, 0.66f, 0.65f)) {
+                            enter_game(app);
+                        }
+                        else if (is_inside_button(x, y, 0.34f, 0.44f, 0.66f, 0.53f)) {
+                            app->fullscreen = !app->fullscreen;
 
-                        SDL_SetWindowFullscreen(
-                            app->window,
-                            app->fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0
-                        );
-                    }
-
-                    if (x >= 0.34f && x <= 0.66f && y >= 0.32f && y <= 0.41f) {
-                        app->inverted_mouse = !app->inverted_mouse;
-                        app->game.inverted_mouse = app->inverted_mouse;
-                    }
-
-                    if (x >= 0.34f && x <= 0.66f && y >= 0.20f && y <= 0.29f) {
-                        app->running = 0;
+                            SDL_SetWindowFullscreen(
+                                app->window,
+                                app->fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0
+                            );
+                        }
+                        else if (is_inside_button(x, y, 0.34f, 0.32f, 0.66f, 0.41f)) {
+                            app->inverted_mouse = !app->inverted_mouse;
+                            app->game.inverted_mouse = app->inverted_mouse;
+                        }
+                        else if (is_inside_button(x, y, 0.34f, 0.20f, 0.66f, 0.29f)) {
+                            app->running = 0;
+                        }
                     }
                 }
             }
@@ -183,35 +248,26 @@ void run_app(App* app)
         }
 
         key_state = SDL_GetKeyboardState(NULL);
-        if (!app->in_menu) {
-            int mx;
-            int my;
-            int center_x = app->width / 2;
-            int center_y = app->height / 2;
-
-            SDL_GetMouseState(&mx, &my);
-
-            mouse_dx = mx - center_x;
-            mouse_dy = my - center_y;
-
-            if (mouse_dx > 120) mouse_dx = 120;
-            if (mouse_dx < -120) mouse_dx = -120;
-            if (mouse_dy > 120) mouse_dy = 120;
-            if (mouse_dy < -120) mouse_dy = -120;
-
-            SDL_WarpMouseInWindow(app->window, center_x, center_y);
-        }
-
 
         if (app->in_menu) {
+            SDL_SetRelativeMouseMode(SDL_FALSE);
             SDL_ShowCursor(SDL_ENABLE);
 
-            mouse_dx = 0;
-            mouse_dy = 0;
-
-            render_menu(app->window, app->fullscreen, app->inverted_mouse);
+            render_menu(
+                app->window,
+                app->fullscreen,
+                app->inverted_mouse
+            );
         } else {
-            SDL_ShowCursor(SDL_DISABLE);
+            if (app->game.game_over || app->game.escaped) {
+                SDL_SetRelativeMouseMode(SDL_FALSE);
+                SDL_ShowCursor(SDL_ENABLE);
+                mouse_dx = 0;
+                mouse_dy = 0;
+            } else {
+                SDL_SetRelativeMouseMode(SDL_TRUE);
+                SDL_ShowCursor(SDL_DISABLE);
+            }
 
             app->game.inverted_mouse = app->inverted_mouse;
 

@@ -188,6 +188,10 @@ GLuint load_glb_model(const char* filepath)
                 float g = material->pbr_metallic_roughness.base_color_factor[1];
                 float b = material->pbr_metallic_roughness.base_color_factor[2];
 
+                r = r * 0.32f + 0.18f;
+                g = g * 0.30f + 0.16f;
+                b = b * 0.24f + 0.11f;
+
                 glColor3f(r, g, b);
 
                 texture_id = load_base_color_texture(material, filepath);
@@ -202,7 +206,7 @@ GLuint load_glb_model(const char* filepath)
                 }
             }
             else {
-                glColor3f(0.75f, 0.75f, 0.75f);
+                glColor3f(0.36f, 0.28f, 0.18f);
                 glDisable(GL_TEXTURE_2D);
             }
 
