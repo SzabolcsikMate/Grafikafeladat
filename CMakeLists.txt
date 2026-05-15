@@ -3,25 +3,15 @@ project(Dark_Museum C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SDK_ROOT "${CMAKE_SOURCE_DIR}/..")
-set(MINGW_ROOT "${SDK_ROOT}/MinGW")
-
 find_package(OpenGL REQUIRED)
 
-include_directories(
-        ${CMAKE_SOURCE_DIR}/include
-        ${MINGW_ROOT}/include
-        ${MINGW_ROOT}/include/SDL2
-)
-
-link_directories(
-        ${MINGW_ROOT}/lib
-)
-
-add_executable(Dark_Museum
+set(SOURCE_FILES
         main.c
         src/app.c
         src/game.c
+        src/map.c
+        src/lamps.c
+        src/player.c
         src/render.c
         src/collision.c
         src/math3d.c
@@ -29,10 +19,42 @@ add_executable(Dark_Museum
         src/model.c
 )
 
-target_link_libraries(Dark_Museum
-        mingw32
-        SDL2main
-        SDL2
-        opengl32
-        gdi32
+add_executable(Dark_Museum ${SOURCE_FILES})
+
+target_include_directories(Dark_Museum PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
 )
+
+if (WIN32 AND EXISTS "${CMAKE_SOURCE_DIR}/../MinGW")
+    set(MINGW_ROOT "${CMAKE_SOURCE_DIR}/../MinGW")
+
+    target_include_directories(Dark_Museum PRIVATE
+            ${MINGW_ROOT}/include
+            ${MINGW_ROOT}/include/SDL2
+    )
+
+    target_link_directories(Dark_Museum PRIVATE
+            ${MINGW_ROOT}/lib
+    )
+
+    target_link_libraries(Dark_Museum
+            mingw32
+            SDL2main
+            SDL2
+            opengl32
+            glu32
+            gdi32
+    )
+else()
+    find_package(SDL2 REQUIRED)
+
+    target_include_directories(Dark_Museum PRIVATE
+            ${SDL2_INCLUDE_DIRS}
+    )
+
+    target_link_libraries(Dark_Museum
+            ${SDL2_LIBRARIES}
+            OpenGL::GL
+            m
+    )
+endif()

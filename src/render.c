@@ -4,7 +4,9 @@
 #include <GL/gl.h>
 #include "render.h"
 #include "game.h"
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <string.h>
 
 #define LAMP_MODEL_BASE_OFFSET 1.78f
@@ -986,6 +988,7 @@ static GLuint font_mid = 0;
 
 static void init_menu_font_list(GLuint* font_list, int height, const char* name)
 {
+#ifdef _WIN32
     HDC hdc;
     HFONT font;
     HFONT old_font;
@@ -1022,6 +1025,12 @@ static void init_menu_font_list(GLuint* font_list, int height, const char* name)
     wglUseFontBitmapsA(hdc, 32, 96, *font_list);
     SelectObject(hdc, old_font);
     DeleteObject(font);
+
+#else
+    (void)font_list;
+    (void)height;
+    (void)name;
+#endif
 }
 
 static void init_menu_fonts(void)
@@ -1059,6 +1068,7 @@ static void draw_ui_outline_px(float x1, float y1, float x2, float y2, float r, 
 
 static void draw_text_px(GLuint font_list, const char* text, float x, float y, float r, float g, float b)
 {
+#ifdef _WIN32
     if (font_list == 0 || text == NULL) {
         return;
     }
@@ -1067,6 +1077,34 @@ static void draw_text_px(GLuint font_list, const char* text, float x, float y, f
     glRasterPos2f(x, y);
     glListBase(font_list - 32);
     glCallLists((GLsizei)strlen(text), GL_UNSIGNED_BYTE, text);
+
+#else
+    int i;
+    float char_w = 12.0f;
+    float char_h = 18.0f;
+
+    (void)font_list;
+
+    if (text == NULL) {
+        return;
+    }
+
+    glColor3f(r, g, b);
+
+    for (i = 0; text[i] != '\0'; i++) {
+        if (text[i] != ' ') {
+            float px = x + (float)i * char_w;
+
+            glBegin(GL_LINE_LOOP);
+            glVertex2f(px, y - char_h);
+            glVertex2f(px + char_w * 0.65f, y - char_h);
+            glVertex2f(px + char_w * 0.65f, y);
+            glVertex2f(px, y);
+            glEnd();
+        }
+    }
+
+#endif
 }
 
 static void draw_centered_text_px(GLuint font_list, const char* text, float cx, float y, float approx_char_w, float r, float g, float b)
