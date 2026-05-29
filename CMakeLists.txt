@@ -13,6 +13,10 @@ set(SOURCE_FILES
         src/lamps.c
         src/player.c
         src/render.c
+        src/render_geometry.c
+        src/render_lamps.c
+        src/ui.c
+        src/font.c
         src/collision.c
         src/math3d.c
         src/texture.c

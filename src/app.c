@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "app.h"
 #include "render.h"
+#include "ui.h"
 #include "texture.h"
 #include "model.h"
 

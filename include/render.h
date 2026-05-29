@@ -9,7 +9,6 @@ void init_render_state(void);
 
 void resize_viewport(int width, int height);
 
-void render_menu(SDL_Window* window, int fullscreen, int inverted_mouse);
 
 void render_scene(
     SDL_Window* window,

@@ -129,7 +129,13 @@ static int can_move_to(GameState* game, Vec3 new_pos)
     return 1;
 }
 
-void update_player(GameState* game, float dt, const unsigned char* key_state, int mouse_dx, int mouse_dy)
+void update_player(
+    GameState* game,
+    float dt,
+    const unsigned char* key_state,
+    int mouse_dx,
+    int mouse_dy
+)
 {
     handle_mouse_look(game, mouse_dx, mouse_dy);
     handle_movement(game, dt, key_state);

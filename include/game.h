@@ -7,6 +7,7 @@
 #define MAX_COLLIDERS 512
 #define MAX_LIGHT_POINTS 24
 #define MAX_MAP_OBJECTS 256
+#define PLAYER_HEIGHT 1.0f
 
 typedef enum {
     OBJ_COLUMN,
